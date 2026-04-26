@@ -4,7 +4,6 @@
   <artifactId>BachelorThesis</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <build>
-    <sourceDirectory>src</sourceDirectory>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -13,6 +12,14 @@
           <release>21</release>
         </configuration>
       </plugin>
+      <plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-surefire-plugin</artifactId>
+  <version>3.2.5</version>
+  <configuration>
+    <useModulePath>false</useModulePath>
+  </configuration>
+</plugin>
     </plugins>
   </build>
   <dependencies>
@@ -24,12 +31,18 @@
     <dependency>
    <groupId>org.tweetyproject.arg</groupId>
    <artifactId>dung</artifactId>
-   <version>1.30</version>
+   <version>1.30-SNAPSHOT</version>
 </dependency>
 <dependency>
    <groupId>org.tweetyproject.arg</groupId>
    <artifactId>rankings</artifactId>
    <version>1.30</version>
+</dependency>
+<dependency>
+  <groupId>org.junit.jupiter</groupId>
+  <artifactId>junit-jupiter</artifactId>
+  <version>5.10.2</version>
+  <scope>test</scope>
 </dependency>
   </dependencies>
 </project>

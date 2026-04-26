@@ -1,3 +1,4 @@
+package service;
 import java.util.List;
 
 import org.tweetyproject.arg.dung.syntax.DungTheory;

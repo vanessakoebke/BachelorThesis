@@ -1,3 +1,4 @@
+package service;
 import org.ejml.simple.SimpleMatrix;
 import org.tweetyproject.arg.dung.syntax.DungTheory;
 import org.tweetyproject.math.matrix.Matrix;
@@ -11,8 +12,8 @@ public class PTIME_Algorithm {
             int Ma = 0;
             int Mb = 0;
           for (int j = 0; j < F.getNumRows(); j++) {
-              Ma += M.get(j, a-1);
-              Mb += M.get(j, b-1);
+              Ma += M.get(j, a);
+              Mb += M.get(j, b);
           }
           if ((i % 2 != 0 && Ma < Mb) || (i % 2 == 0 && Mb < Ma)) {
               return true;
