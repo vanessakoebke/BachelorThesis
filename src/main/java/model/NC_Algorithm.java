@@ -9,6 +9,7 @@ import org.tweetyproject.arg.dung.syntax.DungTheory;
 
 public class NC_Algorithm {
     
+    //DO NOT USE
     public static boolean equivDis_Sequential_DoubleMatrix(SimpleMatrix F, int a, int b) {
         int K = 1000; // K = 1000 leads to a confidence level of (K-1)/K = 99.9%
         //construct Q automaton A_
@@ -206,8 +207,42 @@ public class NC_Algorithm {
             if (Math.abs(sumV1 - sumV2) > 1e-9) { //For big matrices and big r, risk of rounding errors, therefore approximate comparison
                 if (iter % 2 != 0) {
                     if (sumV1 > sumV2) {
-                        System.out.println("i ungerade und v1 < v2");
-                        System.out.println("v1 = " + sumV1 + ", v2 = " + sumV2);
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+                if (iter % 2 == 0) {
+                    if (sumV1 > sumV2) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    public static boolean strongDis_Sequential(SimpleMatrix F, int a, int b) {
+        int K = 1000; // K = 1000 leads to a confidence level of (K-1)/K = 99.9%
+        int num_arguments = F.getNumRows();
+        SimpleMatrix v1 = new SimpleMatrix(num_arguments, 1);
+        SimpleMatrix v2 = new SimpleMatrix(num_arguments, 1);
+        v1.set(a, 0, 1); //first argument
+        v2.set(b, 0, 1); //second argument
+        //Optimized test for zeroness
+        for (int iter = 1; iter <= 2*num_arguments; iter++) {
+            int r = ThreadLocalRandom.current().nextInt(1, 2*K * num_arguments + 1);
+            SimpleMatrix v1New =F.mult(v1).scale(r);
+            SimpleMatrix v2New =F.mult(v2).scale(r);
+            v1 = v1New;
+            v2 = v2New;
+            double sumV1 = v1.elementSum();
+            double sumV2 = v2.elementSum();
+            if (Math.abs(sumV1 - sumV2) > 1e-9) { //For big matrices and big r, risk of rounding errors, therefore approximate comparison
+                if (iter % 2 != 0) {
+                    if (sumV1 > sumV2) {
                         return false;
                     } else {
                         return true;

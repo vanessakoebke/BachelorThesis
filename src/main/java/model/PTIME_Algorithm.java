@@ -7,7 +7,7 @@ import org.ejml.simple.SimpleMatrix;
 public class PTIME_Algorithm {
     
     // Implementation using the SimpleMatrix of the EJML library
-    public static boolean strongDis_Seq(SimpleMatrix F, int a, int b) {
+    public static boolean strongDis_Sequential(SimpleMatrix F, int a, int b) {
         SimpleMatrix M = F.copy();
         for (int i = 1; i <= 2 * F.getNumRows() - 1; i++) {
             int Ma = 0;
@@ -51,7 +51,7 @@ public class PTIME_Algorithm {
             for (int i = 0; i < n; i++) {
                 Mold[i] = M[i].clone();
             }
-            double[][] Mnew = new double[n][];
+            double[][] Mnew = new double[n][n];
             //Parallelization starts here
             IntStream.range(0, n).parallel().forEach(i -> {
                 for (int j = 0; j < n; j++) {
@@ -134,7 +134,7 @@ public class PTIME_Algorithm {
             for (int i = 0; i < n; i++) {
                 Mold[i] = M[i].clone();
             }
-            double[][] Mnew = new double[n][];
+            double[][] Mnew = new double[n][n];
             //Parallelization starts here
             IntStream.range(0, n).parallel().forEach(i -> {
                 for (int j = 0; j < n; j++) {
