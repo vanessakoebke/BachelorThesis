@@ -37,7 +37,7 @@ public class RunTimeAnalysis {
             int a = ThreadLocalRandom.current().nextInt(0, inputSize);
             int b = ThreadLocalRandom.current().nextInt(0, inputSize);
             long startP = System.nanoTime();
-            PTIME_Algorithm.EquivDis(matrix, a, b);
+            PTIME_Algorithm.equivDis_Sequential(matrix, a, b);
             long endP = System.nanoTime();
             long startNC = System.nanoTime();
             NC_Algorithm.equivDis_Sequential_DoubleMatrix(matrix, a, b);

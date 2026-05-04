@@ -27,7 +27,7 @@ public class AlgorithmTest {
         DiscussionBasedRankingReasoner referenceAlgo = new DiscussionBasedRankingReasoner();
         LatticePartialOrder<Argument, DungTheory> ranking = referenceAlgo.getModel(af);
         boolean reference = ranking.isStrictlyMoreOrEquallyAcceptableThan(a, b);
-        boolean ptime = PTIME_Algorithm.StrongerDis(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
+        boolean ptime = PTIME_Algorithm.strongDis_Seq(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
         assertTrue(reference ==ptime);
     }
     
@@ -40,7 +40,7 @@ public class AlgorithmTest {
         DiscussionBasedRankingReasoner referenceAlgo = new DiscussionBasedRankingReasoner();
         LatticePartialOrder<Argument, DungTheory> ranking = referenceAlgo.getModel(af);
         boolean reference = ranking.isEquallyAcceptableThan(a, b);
-        boolean ptime = PTIME_Algorithm.EquivDis(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
+        boolean ptime = PTIME_Algorithm.equivDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
         boolean nc = NC_Algorithm.equivDis_Sequential_DoubleMatrix(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
         System.out.println(reference + " " + ptime + " " + nc);
         assertTrue(reference == ptime && ptime == nc);
@@ -49,7 +49,7 @@ public class AlgorithmTest {
     @RepeatedTest(50)
     void testEquivDisF(){
         DungTheory af = new DefaultDungTheoryGenerator(100, 0.5).next();
-        boolean ptime = PTIME_Algorithm.EquivDis(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
+        boolean ptime = PTIME_Algorithm.equivDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
         boolean nc = NC_Algorithm.equivDis_Sequential_DoubleMatrix(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
         System.out.println( ptime + " " + nc);
         assertTrue(ptime == nc);
@@ -58,7 +58,7 @@ public class AlgorithmTest {
     @RepeatedTest(1000)
     void testStrongDis_PTime_vs_NC() {
         DungTheory af = new DefaultDungTheoryGenerator(100, 0.5).next();
-        boolean ptime = PTIME_Algorithm.StrongerDis(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
+        boolean ptime = PTIME_Algorithm.strongDis_Seq(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
         boolean nc = NC_Algorithm.strongDis_Parallel(af.getAdjacencyArray(), 0, 1);
         System.out.println("StrongDis: " + ptime + " " + nc);
         assertTrue(ptime == nc);
