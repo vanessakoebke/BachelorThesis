@@ -8,10 +8,10 @@ import org.tweetyproject.arg.dung.syntax.Argument;
 import org.tweetyproject.arg.dung.syntax.DungTheory;
 
 public class NC_Algorithm {
+    private static int K = 1000; //K = 1000 leads to a confidence level of (K-1)/K = 99.9%
     
     //DO NOT USE
     public static boolean equivDis_Sequential_DoubleMatrix(SimpleMatrix F, int a, int b) {
-        int K = 1000; // K = 1000 leads to a confidence level of (K-1)/K = 99.9%
         //construct Q automaton A_
         int statesF = F.getNumRows();
         int statesA_ = statesF * 2;
@@ -54,7 +54,6 @@ public class NC_Algorithm {
     }
     
     public static boolean equivDis_Parallel(double[][] F, int a, int b) {
-        int K = 1000; // K = 1000 leads to a confidence level of (K-1)/K = 99.9%
         int num_arguments = F.length;
         double[] v1 = new double[num_arguments];
         double[] v2 = new double[num_arguments];
@@ -98,7 +97,6 @@ public class NC_Algorithm {
     }
     
     public static boolean equivDis_SpaceOptimized(DungTheory F, int a, int b) {
-        int K = 1000; // K = 1000 leads to a confidence level of (K-1)/K = 99.9%
         int num_arguments = F.getNumberOfNodes();
         double[] v1 = new double[num_arguments];
         double[] v2 = new double[num_arguments];
@@ -117,8 +115,7 @@ public class NC_Algorithm {
                 double sum1 = 0;
                 double sum2 = 0;
                 for (int j = 0; j < num_arguments; j++) {
-                    if (true) {
-                        //F.isAttackedBy(j, i) implement with integers instead of arguments
+                    if (F.isAttackedBy(new Argument("a" +j), new Argument("a" +i))) {
                         sum1 += v1Old[j];
                         sum2 += v2Old[j];
                     }
@@ -135,9 +132,6 @@ public class NC_Algorithm {
                 sumV2 += v2[k];
             }
             if (Math.abs(sumV1 - sumV2) > 1e-9) { //For big matrices and big r, risk of rounding errors, therefore approximate comparison
-                System.out.println("i = " + iter);
-                boolean z = sumV1 > sumV2;
-                System.out.println("z = " + z);
                 return false;
             }
         }
@@ -145,7 +139,6 @@ public class NC_Algorithm {
     }
     
     public static boolean equivDis_Sequential(SimpleMatrix F, int a, int b) {
-        int K = 1000; // K = 1000 leads to a confidence level of (K-1)/K = 99.9%
         int num_arguments = F.getNumRows();
         SimpleMatrix v1 = new SimpleMatrix(num_arguments, 1);
         SimpleMatrix v2 = new SimpleMatrix(num_arguments, 1);
@@ -171,7 +164,6 @@ public class NC_Algorithm {
     }
     
     public static boolean strongDis_Parallel(double[][] F, int a, int b) {
-        int K = 1000; // K = 1000 leads to a confidence level of (K-1)/K = 99.9%
         int num_arguments = F.length;
         double[] v1 = new double[num_arguments];
         double[] v2 = new double[num_arguments];
@@ -225,7 +217,6 @@ public class NC_Algorithm {
     }
     
     public static boolean strongDis_Sequential(SimpleMatrix F, int a, int b) {
-        int K = 1000; // K = 1000 leads to a confidence level of (K-1)/K = 99.9%
         int num_arguments = F.getNumRows();
         SimpleMatrix v1 = new SimpleMatrix(num_arguments, 1);
         SimpleMatrix v2 = new SimpleMatrix(num_arguments, 1);
