@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.ejml.simple.SimpleMatrix;
+import org.tweetyproject.arg.dung.syntax.DungTheory;
 import org.tweetyproject.arg.dung.util.DefaultDungTheoryGenerator;
 
 import model.NC_Algorithm;
@@ -52,6 +53,50 @@ public class RunTimeAnalysisNC {
             } 
         }
         String fileName = "NC_EquivDis_sequential_parallel" + "_" + LocalDate.now() + "_" + LocalTime.now();
+        try {
+            Files.write(Path.of("Output/" + fileName + ".csv"), output);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
+    public static void equivDis_spaceOptimized_size(int[] inputSize, double inputDensity, int repetitions) {
+        // Warm-up for JIT
+        DefaultDungTheoryGenerator generator = new DefaultDungTheoryGenerator(10, inputDensity);
+        for (int i = 0; i < 1000; i++) {
+            DungTheory aaf =generator.next();
+            double[][] array = aaf.getAdjacencyArray();
+
+            int a = ThreadLocalRandom.current().nextInt(0, 10);
+            int b = ThreadLocalRandom.current().nextInt(0, 10);
+
+            NC_Algorithm.equivDis_Parallel(array, a, b);
+            NC_Algorithm.equivDis_SpaceOptimized(aaf, a, b);
+        }
+        //Actual tests
+        List<String> output = new ArrayList<>();
+        output.add("n,run,time_para,time_spaceOpti");
+        for (int size : inputSize) {
+            //Input generation for real input
+            generator = new DefaultDungTheoryGenerator(size, inputDensity);
+            DungTheory aaf =generator.next();
+            double[][] array = aaf.getAdjacencyArray();
+            for (int i = 1; i <= repetitions; i++) {
+                int a = ThreadLocalRandom.current().nextInt(0, size);
+                int b = ThreadLocalRandom.current().nextInt(0, size);
+                long startSpace = System.nanoTime();
+                NC_Algorithm.equivDis_SpaceOptimized(aaf, a, b);
+                long endSpace = System.nanoTime();
+                long startPara = System.nanoTime();
+                NC_Algorithm.equivDis_Parallel(array, a, b);
+                long endPara = System.nanoTime();
+                long durationSpace = endSpace - startSpace;
+                long durationPara = endPara - startPara;
+                output.add( size + "," + i + "," + String.valueOf(durationPara) + "," + String.valueOf(durationSpace));
+            } 
+        }
+        String fileName = "NC_EquivDis_parallel_spaceOptimized" + "_" + LocalDate.now() + "_" + LocalTime.now();
         try {
             Files.write(Path.of("Output/" + fileName + ".csv"), output);
         } catch (IOException e) {

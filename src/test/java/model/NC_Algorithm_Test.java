@@ -19,6 +19,15 @@ public class NC_Algorithm_Test {
     }
     
     @RepeatedTest(1000)
+    void testEquivDis_SpaceOptimized(){
+        DungTheory af = new DefaultDungTheoryGenerator(100, 0.5).next();
+        boolean parallel = NC_Algorithm.equivDis_Parallel(af.getAdjacencyArray(), 0, 1);
+        boolean spaceOpti = NC_Algorithm.equivDis_SpaceOptimized(af, 0, 1);
+        System.out.println( spaceOpti + " " + parallel);
+        assertTrue(spaceOpti == parallel);
+    }
+    
+    @RepeatedTest(1000)
     void testStrongDis(){
         DungTheory af = new DefaultDungTheoryGenerator(100, 0.5).next();
         boolean seq = NC_Algorithm.strongDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);

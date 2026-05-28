@@ -1,9 +1,18 @@
-import service.RunTimeAnalysisNC;
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.tweetyproject.arg.dung.syntax.DungTheory;
+import org.tweetyproject.arg.dung.util.DefaultDungTheoryGenerator;
+
+import model.NC_Algorithm;
 
 public class testMain {
     public static void main(String[] args) {
         int[] sizes = {10, 50, 100, 500, 1000, 5000};
-        RunTimeAnalysisNC.equivDis_parallel_vs_sequential_size(sizes, 0.5, 500);
+        DungTheory aaf = new DefaultDungTheoryGenerator(10000, 0.5).next();
+        boolean result = NC_Algorithm.equivDis_SpaceOptimized(aaf, ThreadLocalRandom.current().nextInt(0, 10000), ThreadLocalRandom.current().nextInt(0, 10000));
+        System.out.println(result);
+     //   RunTimeAnalysisNC.equivDis_spaceOptimized_size(sizes, 0.5, 500);
+//        RunTimeAnalysisNC.equivDis_parallel_vs_sequential_size(sizes, 0.5, 500);
         
 //        DefaultDungTheoryGenerator generator = new DefaultDungTheoryGenerator(10, 0.5);
 //        for (int i = 0; i < 100; i++) {
