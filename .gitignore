@@ -3,5 +3,4 @@
 /Output/
 /input/
 input/*
-!input/julia_comparison_instances/
-!input/julia_comparison_instances/**
+!input/julia_comparison_instances.zip
