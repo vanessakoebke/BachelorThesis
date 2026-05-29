@@ -2,3 +2,6 @@
 /Proposal_bachelor_thesis_Vanessa_Köbke.pdf
 /Output/
 /input/
+input/*
+!input/julia_comparison_instances/
+!input/julia_comparison_instances/**
