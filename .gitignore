@@ -4,3 +4,10 @@
 /input/
 input/*
 !input/julia_comparison_instances.zip
+/instances/
+/rust/target/
+/cpp/build/
+.DS_Store
+.DS_Store
+analysis/.DS_Store
+input/.DS_Store

@@ -62,7 +62,7 @@ function StrongDis_MV(F, a, b)
     v1[a] = 1.0
     v2[b] = 1.0
     for iter in 1:(2n)
-        r = rand(1:(2n*1000))   # Julia-Äquivalent zu ThreadLocalRandom
+        r = rand(1:(2n*1000))   
         v1 = F * v1 * r
         v2 = F * v2 * r
         sumV1 = sum(v1)

@@ -4,31 +4,47 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
-import org.tweetyproject.arg.dung.parser.Iccma23Parser;
 import org.tweetyproject.arg.dung.syntax.DungTheory;
 import org.tweetyproject.arg.dung.util.DefaultDungTheoryGenerator;
 
 import model.Instance;
 
 public class Util {
-    public static List<DungTheory> readICCMA() {
-        List<DungTheory> output = new ArrayList<>();
-        try {
-            Path folder = Paths.get("input/ICCMA");
-            Iccma23Parser parser = new Iccma23Parser();
-            Files.list(folder).filter(path -> path.toString().endsWith(".af")).forEach(path -> {
-                try {
-                    output.add(parser.parse(Files.newBufferedReader(path)));
-                } catch (IOException e) {
-                    System.out.println("Parsing file " + path + " failed.");
-                    e.printStackTrace();
-                }
-            });
+    public static double[][] readICCMA(Path path) {
+        double[][] matrix = null;
+        try (BufferedReader reader = Files.newBufferedReader(path)) {
+        ;
+        String line;
+        List<int[]> inputList = new ArrayList<>();
+        while ((line = reader.readLine()) != null) {
+            if (line.startsWith("#") || line.startsWith("p")) {
+                continue;
+            }
+            String[] lineArr = line.split(" ");
+            inputList.add(new int[]{
+                    Integer.parseInt(lineArr[0]),
+                    Integer.parseInt(lineArr[1])
+                });
+        }
+        int max = 0;
+        for (int[] elem: inputList) {
+            if (elem[0] > max) {
+                max = elem[0];
+            }
+            if (elem[1] > max) {
+                max = elem[1];
+            }
+        }
+        matrix = new double[max][max];
+        
+        for (int[] elem: inputList) {
+            matrix[elem[0]][elem[1]] = 1;
+        }
         } catch (IOException e) {
             System.out.println("Iterating through the ICCMA folder failed.");
             e.printStackTrace();
         }
-        return output;
+        return matrix;
     }
 
     public static void testGenerator() throws Exception {
@@ -40,7 +56,6 @@ public class Util {
                 DungTheory af = generator.next();
                 double[][] A_double = af.getAdjacencyArray();
                 int[][] A = new int[size][size];
-
                 for (int i = 0; i < size; i++) {
                     for (int j = 0; j < size; j++) {
                         A[i][j] = (int) A_double[i][j];
@@ -63,27 +78,20 @@ public class Util {
             }
         }
     }
-    
+
     public static Instance loadInstance(String path) throws Exception {
-
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-
             String[] header = br.readLine().split(",");
-
             int n = Integer.parseInt(header[0].trim());
             int a = Integer.parseInt(header[1].trim());
             int b = Integer.parseInt(header[2].trim());
-
             double[][] A = new double[n][n];
-
             for (int i = 0; i < n; i++) {
                 String[] parts = br.readLine().trim().split("\\s+");
-
                 for (int j = 0; j < n; j++) {
                     A[i][j] = Double.parseDouble(parts[j]);
                 }
             }
-
             return new Instance(A, a, b);
         }
     }

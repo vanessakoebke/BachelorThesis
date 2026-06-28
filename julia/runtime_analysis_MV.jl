@@ -16,35 +16,50 @@ function format_time(x)
     end
 end
 
+function plot_runtime_series!(x, values, label, color, marker, linestyle)
+    plot!(x, values,
+        label=label,
+        marker=marker,
+        markersize=7,
+        markerstrokewidth=1.2,
+        lw=2.6,
+        linestyle=linestyle,
+        seriescolor=color,
+        linealpha=0.9)
+end
+
 # =========================
 # 0. stabile Pfade (WICHTIG)
 # =========================
 base = @__DIR__
 
-java_path  = "results/java_results_ejml_NC.csv"
-julia_path = "results/julia_results_MV_withoutTypAnnotation.csv"
-julia_ann_path = "results/julia_results_MV_withTypAnnotation.csv"
+java_path  = joinpath(base, "..", "results", "java_results_ejml_nc.csv")
+julia_path = joinpath(base, "..", "results", "julia_results_MV_withoutTypAnnotation.csv")
+julia_ann_path = joinpath(base, "..", "results", "julia_results_MV_withTypAnnotation.csv")
+rust_path = joinpath(base, "..", "results", "rust_results_MV.csv")
+cpp_path = joinpath(base, "..", "results", "cpp_results_MV.csv")
 
 # =========================
 # 1. Daten laden
 # =========================
-java_mm  = CSV.read(java_path, DataFrame)
-julia_mm = CSV.read(julia_path, DataFrame)
-julia_ann_mm = CSV.read(julia_ann_path, DataFrame)
+function load_runtime_results(path, time_col)
+    df = CSV.read(path, DataFrame)
+    df.file = clean_filename.(df.file)
+    rename!(df, :time => time_col)
+    return df[:, [:file, time_col]]
+end
 
-# Dateinamen vereinheitlichen
-java_mm.file = clean_filename.(java_mm.file)
-julia_mm.file = clean_filename.(julia_mm.file)
-julia_ann_mm.file = clean_filename.(julia_ann_mm.file)
-
-# Spalten vorher umbenennen
-rename!(java_mm, :time => :time_java)
-rename!(julia_mm, :time => :time_julia)
-rename!(julia_ann_mm, :time => :time_julia_ann)
+java_mm = load_runtime_results(java_path, :time_java)
+julia_mm = load_runtime_results(julia_path, :time_julia)
+julia_ann_mm = load_runtime_results(julia_ann_path, :time_julia_ann)
+rust_mm = load_runtime_results(rust_path, :time_rust)
+cpp_mm = load_runtime_results(cpp_path, :time_cpp)
 
 # Join
 df = innerjoin(java_mm, julia_mm, on=:file, makeunique=true)
 df = innerjoin(df, julia_ann_mm, on=:file, makeunique=true)
+df = innerjoin(df, rust_mm, on=:file, makeunique=true)
+df = innerjoin(df, cpp_mm, on=:file, makeunique=true)
 
 # =========================
 # 2. n aus Dateiname extrahieren
@@ -60,7 +75,9 @@ df.n = extract_n.(df.file)
 med = combine(groupby(df, :n),
     :time_java  => median => :java_med,
     :time_julia => median => :julia_med,
-    :time_julia_ann => median => :julia_ann_med
+    :time_julia_ann => median => :julia_ann_med,
+    :time_rust => median => :rust_med,
+    :time_cpp => median => :cpp_med
 )
 
 sort!(med, :n)
@@ -75,26 +92,33 @@ x = 1:length(n_vals)
 plot(x, med.java_med,
     label="Java",
     marker=:circle,
-    lw=2,
+    markersize=7,
+    markerstrokewidth=1.2,
+    lw=2.8,
+    linestyle=:solid,
+    seriescolor=:black,
+    linealpha=0.9,
     yscale=:log10,
     grid=true,
-    legend=:topleft)
+    minorgrid=true,
+    legend=:outertopright,
+    size=(1100, 650),
+    dpi=300,
+    framestyle=:box,
+    foreground_color_legend=nothing,
+    background_color_legend=nothing)
 
-plot!(x, med.julia_med,
-    label="Julia ohne Typannotation",
-    marker=:square,
-    lw=2)
-
-plot!(x, med.julia_ann_med,
-    label="Julia mit Typannotation",
-    marker=:square,
-    lw=2)    
+plot_runtime_series!(x, med.julia_med, "Julia ohne Typannotation", :dodgerblue3, :square, :dash)
+plot_runtime_series!(x, med.julia_ann_med, "Julia mit Typannotation", :deepskyblue4, :hexagon, :dot)
+plot_runtime_series!(x, med.rust_med, "Rust", :darkorange2, :diamond, :dashdot)
+plot_runtime_series!(x, med.cpp_med, "C++", :forestgreen, :utriangle, :solid)    
 
 # X-Achse als Kategorien
 xticks!(x, string.(n_vals))
 
-yt = exp10.(floor(log10(minimum(vcat(med.java_med, med.julia_med)))) :
-            ceil(log10(maximum(vcat(med.java_med, med.julia_med)))))
+all_times = vcat(med.java_med, med.julia_med, med.julia_ann_med, med.rust_med, med.cpp_med)
+yt = exp10.(floor(log10(minimum(all_times))) :
+            ceil(log10(maximum(all_times))))
 
 yticks!(yt, format_time.(yt))
 
@@ -107,10 +131,40 @@ ylabel!("Laufzeit (log-Skala)")
 savefig(joinpath(base, "..", "results", "runtime_comparison_mv.png"))
 display(current())
 
+relative_plot = plot(x, ones(length(x)),
+    label="Java",
+    marker=:circle,
+    markersize=7,
+    markerstrokewidth=1.2,
+    lw=2.8,
+    linestyle=:solid,
+    seriescolor=:black,
+    grid=true,
+    minorgrid=true,
+    legend=:outertopright,
+    size=(1100, 650),
+    dpi=300,
+    framestyle=:box,
+    foreground_color_legend=nothing,
+    background_color_legend=nothing)
+
+plot_runtime_series!(x, med.julia_med ./ med.java_med, "Julia ohne Typannotation", :dodgerblue3, :square, :dash)
+plot_runtime_series!(x, med.julia_ann_med ./ med.java_med, "Julia mit Typannotation", :deepskyblue4, :hexagon, :dot)
+plot_runtime_series!(x, med.rust_med ./ med.java_med, "Rust", :darkorange2, :diamond, :dashdot)
+plot_runtime_series!(x, med.cpp_med ./ med.java_med, "C++", :forestgreen, :utriangle, :solid)
+
+xticks!(x, string.(n_vals))
+xlabel!("Eingabegröße (n)")
+ylabel!("Relative Laufzeit zu Java")
+hline!([1.0], label="", linestyle=:dash, seriescolor=:gray)
+savefig(relative_plot, joinpath(base, "..", "results", "runtime_comparison_mv_relative.png"))
+
 # =========================
 # 6. Speedup berechnen
 # =========================
 med.speedup_java_vs_julia = med.java_med ./ med.julia_med
 med.speedup_java_vs_julia_ann = med.java_med ./ med.julia_ann_med
+med.speedup_java_vs_rust = med.java_med ./ med.rust_med
+med.speedup_java_vs_cpp = med.java_med ./ med.cpp_med
 
-println(med[:, [:n, :speedup_java_vs_julia, :speedup_java_vs_julia_ann]])
+println(med[:, [:n, :speedup_java_vs_julia, :speedup_java_vs_julia_ann, :speedup_java_vs_rust, :speedup_java_vs_cpp]])

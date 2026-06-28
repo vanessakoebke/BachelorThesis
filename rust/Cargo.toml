@@ -1,0 +1,12 @@
+[package]
+name = "strongdis_runtime"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+
+[dependencies]
+ndarray = "0.15"
+ndarray-linalg = { version = "0.16", features = ["openblas-system"] }
