@@ -3,11 +3,12 @@ package model;
 import java.util.stream.IntStream;
 
 import org.ejml.simple.SimpleMatrix;
+import org.tweetyproject.arg.dung.syntax.DungTheory;
 
 public class PTIME_Algorithm {
     
     // Implementation using the SimpleMatrix of the EJML library
-    public static boolean strongDis_Sequential(SimpleMatrix F, int a, int b) {
+    public static boolean strongerDis_Sequential(SimpleMatrix F, int a, int b) {
         SimpleMatrix M = F.copy();
         for (int i = 1; i <= 2 * F.getNumRows() - 1; i++) {
             int Ma = 0;
@@ -27,7 +28,7 @@ public class PTIME_Algorithm {
         return false;
     }
     
-    public static boolean strongDis_Parallel(double[][] F, int a, int b) {
+    public static boolean strongerDis_Parallel(double[][] F, int a, int b) {
         int n = F.length;
         double[][] M = new double[n][];
         for (int i = 0; i < n; i++) {
@@ -149,6 +150,7 @@ public class PTIME_Algorithm {
         }
         return true;
     }
+    
 
     public static void equivDis_Optimal(double[][] array, int a, int b) {
         // TODO Auto-generated method stub

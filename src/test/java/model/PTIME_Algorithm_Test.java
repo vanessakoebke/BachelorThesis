@@ -20,8 +20,8 @@ public class PTIME_Algorithm_Test {
     @RepeatedTest(1000)
     void testStrongDis(){
         DungTheory af = new DefaultDungTheoryGenerator(100, 0.5).next();
-        boolean seq = PTIME_Algorithm.strongDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
-        boolean parallel = PTIME_Algorithm.strongDis_Parallel(af.getAdjacencyArray(), 0, 1);
+        boolean seq = PTIME_Algorithm.strongerDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
+        boolean parallel = PTIME_Algorithm.strongerDis_Parallel(af.getAdjacencyArray(), 0, 1);
         System.out.println( seq + " " + parallel);
         assertTrue(seq == parallel);
     }

@@ -11,9 +11,9 @@ import org.tweetyproject.arg.dung.syntax.DungTheory;
 import org.tweetyproject.arg.dung.util.DefaultDungTheoryGenerator;
 
 import io.Util;
-import model.NC_Algorithm;
+import model.PTIME_Algorithm;
 
-public class RunTimeAnalysisNC {
+public class RunTimeAnalysisPTIME {
    
     
     public static void equivDis_parallel_vs_sequential_size(int[] inputSize, double inputDensity, int repetitions) {
@@ -26,8 +26,8 @@ public class RunTimeAnalysisNC {
             int a = ThreadLocalRandom.current().nextInt(0, 10);
             int b = ThreadLocalRandom.current().nextInt(0, 10);
 
-            NC_Algorithm.equivDis_Sequential(m, a, b);
-            NC_Algorithm.equivDis_Parallel(array, a, b);
+            PTIME_Algorithm.equivDis_Sequential(m, a, b);
+            PTIME_Algorithm.equivDis_Parallel(array, a, b);
         }
         //Actual tests
         List<String> output = new ArrayList<>();
@@ -40,58 +40,21 @@ public class RunTimeAnalysisNC {
                 int a = ThreadLocalRandom.current().nextInt(0, size);
                 int b = ThreadLocalRandom.current().nextInt(0, size);
                 long startSeq = System.nanoTime();
-                NC_Algorithm.equivDis_Sequential(new SimpleMatrix(array), a, b);
+                PTIME_Algorithm.equivDis_Sequential(new SimpleMatrix(array), a, b);
                 long endSeq = System.nanoTime();
                 long startPara = System.nanoTime();
-                NC_Algorithm.equivDis_Parallel(array, a, b);
+                PTIME_Algorithm.equivDis_Parallel(array, a, b);
                 long endPara = System.nanoTime();
                 long durationSeq = endSeq - startSeq;
                 long durationPara = endPara - startPara;
                 output.add( size + "," + i + "," + String.valueOf(durationSeq) + "," + String.valueOf(durationPara));
             } 
         }
-        String fileName = "NC_EquivDis_sequential_parallel" + "_" + LocalDate.now() + "_" + LocalTime.now();
+        String fileName = "PTIME_EquivDis_sequential_parallel" + "_" + LocalDate.now() + "_" + LocalTime.now();
         Util.writeOutput(fileName, output);
     }
     
-    public static void equivDis_optimal1_vs_spaceOptimized_size(int[] inputSize, double inputDensity, int repetitions) {
-        // Warm-up for JIT
-        DefaultDungTheoryGenerator generator = new DefaultDungTheoryGenerator(10, inputDensity);
-        for (int i = 0; i < 1000; i++) {
-            DungTheory aaf =generator.next();
-            double[][] array = aaf.getAdjacencyArray();
-
-            int a = ThreadLocalRandom.current().nextInt(0, 10);
-            int b = ThreadLocalRandom.current().nextInt(0, 10);
-
-            NC_Algorithm.equivDis_Optimal1(array, a, b);
-            NC_Algorithm.equivDis_SpaceOptimized(aaf, a, b);
-        }
-        //Actual tests
-        List<String> output = new ArrayList<>();
-        output.add("n,run,time_opt1,time_spaceOpti");
-        for (int size : inputSize) {
-            //Input generation for real input
-            generator = new DefaultDungTheoryGenerator(size, inputDensity);
-            DungTheory aaf =generator.next();
-            double[][] array = aaf.getAdjacencyArray();
-            for (int i = 1; i <= repetitions; i++) {
-                int a = ThreadLocalRandom.current().nextInt(0, size);
-                int b = ThreadLocalRandom.current().nextInt(0, size);
-                long startSpace = System.nanoTime();
-                NC_Algorithm.equivDis_SpaceOptimized(aaf, a, b);
-                long endSpace = System.nanoTime();
-                long startOpt = System.nanoTime();
-                NC_Algorithm.equivDis_Optimal1(array, a, b);
-                long endOpt = System.nanoTime();
-                long durationSpace = endSpace - startSpace;
-                long durationOpt = endOpt - startOpt;
-                output.add( size + "," + i + "," + String.valueOf(durationOpt) + "," + String.valueOf(durationSpace));
-            } 
-        }
-        String fileName = "NC_EquivDis_opt1_spaceOptimized" + "_" + LocalDate.now() + "_" + LocalTime.now();
-        Util.writeOutput(fileName, output);
-    }
+    
     
     public static void strongerDis_parallel_vs_sequential_size(int[] inputSize, double inputDensity, int repetitions) {
         // Warm-up for JIT
@@ -103,8 +66,8 @@ public class RunTimeAnalysisNC {
             int a = ThreadLocalRandom.current().nextInt(0, 10);
             int b = ThreadLocalRandom.current().nextInt(0, 10);
 
-            NC_Algorithm.strongDis_Sequential(m, a, b);
-            NC_Algorithm.strongDis_Parallel(array, a, b);
+            PTIME_Algorithm.strongerDis_Sequential(m, a, b);
+            PTIME_Algorithm.strongerDis_Parallel(array, a, b);
         }
         //Actual tests
         List<String> output = new ArrayList<>();
@@ -117,17 +80,17 @@ public class RunTimeAnalysisNC {
                 int a = ThreadLocalRandom.current().nextInt(0, size);
                 int b = ThreadLocalRandom.current().nextInt(0, size);
                 long startSeq = System.nanoTime();
-                NC_Algorithm.strongDis_Sequential(new SimpleMatrix(array), a, b);
+                PTIME_Algorithm.strongerDis_Sequential(new SimpleMatrix(array), a, b);
                 long endSeq = System.nanoTime();
                 long startPara = System.nanoTime();
-                NC_Algorithm.strongDis_Parallel(array, a, b);
+                PTIME_Algorithm.strongerDis_Parallel(array, a, b);
                 long endPara = System.nanoTime();
                 long durationSeq = endSeq - startSeq;
                 long durationPara = endPara - startPara;
                 output.add( size + "," + i + "," + String.valueOf(durationSeq) + "," + String.valueOf(durationPara));
             } 
         }
-        String fileName = "NC_StrongerDis_sequential_parallel" + "_" + LocalDate.now() + "_" + LocalTime.now();
+        String fileName = "PTIME_StrongerDis_sequential_parallel" + "_" + LocalDate.now() + "_" + LocalTime.now();
         Util.writeOutput(fileName, output);
     }
     

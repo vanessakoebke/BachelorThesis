@@ -2,6 +2,8 @@ package io;
 
 import java.io.*;
 import java.nio.file.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 import org.tweetyproject.arg.dung.syntax.DungTheory;
@@ -93,6 +95,16 @@ public class Util {
                 }
             }
             return new Instance(A, a, b);
+        }
+    }
+    
+    public static void writeOutput(String fileName, List<String> output) {
+        
+        try {
+            Files.write(Path.of("Output/" + fileName + ".csv"), output);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 }

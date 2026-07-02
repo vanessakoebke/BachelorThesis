@@ -7,10 +7,10 @@ import model.NC_Algorithm;
 
 public class testMain {
     public static void main(String[] args) {
-        int[] sizes = {10, 50, 100, 500, 1000, 5000};
-        DungTheory aaf = new DefaultDungTheoryGenerator(10000, 0.5).next();
-        boolean result = NC_Algorithm.equivDis_SpaceOptimized(aaf, ThreadLocalRandom.current().nextInt(0, 10000), ThreadLocalRandom.current().nextInt(0, 10000));
-        System.out.println(result);
+//        int[] sizes = {10, 50, 100, 500, 1000, 5000};
+//        DungTheory aaf = new DefaultDungTheoryGenerator(10000, 0.5).next();
+//        boolean result = NC_Algorithm.equivDis_SpaceOptimized(aaf, ThreadLocalRandom.current().nextInt(0, 10000), ThreadLocalRandom.current().nextInt(0, 10000));
+//        System.out.println(result);
      //   RunTimeAnalysisNC.equivDis_spaceOptimized_size(sizes, 0.5, 500);
 //        RunTimeAnalysisNC.equivDis_parallel_vs_sequential_size(sizes, 0.5, 500);
         
