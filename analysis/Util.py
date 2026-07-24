@@ -5,11 +5,20 @@ import os
 import matplotlib.ticker as ticker
 from matplotlib.ticker import FuncFormatter
 
+blue ="#2638aa"
+purple = "#d183dd"
+
 #Preparing data
 def format_time(x, pos):
-    if x >= 1e6:
+    if x >= 3.6e12:          # 1 Stunde
+        return f"{x/3.6e12:.1f} h"
+    elif x >= 6e10:          # 1 Minute
+        return f"{x/6e10:.1f} min"
+    elif x >= 1e9:           # 1 Sekunde
+        return f"{x/1e9:.1f} s"
+    elif x >= 1e6:           # 1 Millisekunde
         return f"{x/1e6:.1f} ms"
-    elif x >= 1e3:
+    elif x >= 1e3:           # 1 Mikrosekunde
         return f"{x/1e3:.1f} µs"
     else:
         return f"{x:.0f} ns"
@@ -27,7 +36,7 @@ def clean_dataframe(df, col1, col2):
     return df_clean.dropna()
 
 #Plots
-def plot_combined_boxplot(df, col1, col2, label1, label2, output_path):
+def plot_combined_boxplot(df, col1, col2, label1, label2, output_path, title):
     n_values = sorted(df["n"].unique())
 
     data1 = [df[df["n"] == n][col1] for n in n_values]
@@ -43,9 +52,9 @@ def plot_combined_boxplot(df, col1, col2, label1, label2, output_path):
 
     # Farben
     for box in bp1["boxes"]:
-        box.set_facecolor("#1f77b4")
+        box.set_facecolor(blue)
     for box in bp2["boxes"]:
-        box.set_facecolor("#ff7f0e")
+        box.set_facecolor(purple)
 
     # 👉 Median hervorheben
     for median in bp1["medians"]:
@@ -63,20 +72,20 @@ def plot_combined_boxplot(df, col1, col2, label1, label2, output_path):
     plt.ylabel("Runtime (log scale)")
 
     legend_elements = [
-        Patch(facecolor="#1f77b4", label=label1),
-        Patch(facecolor="#ff7f0e", label=label2)
+        Patch(facecolor=blue, label=label1),
+        Patch(facecolor=purple, label=label2)
     ]
-    plt.legend(handles=legend_elements)
-
+    plt.legend(handles=legend_elements, loc="upper left")
+    plt.title(title)
     plt.grid(True, which="both", linestyle="--", alpha=0.4)
 
     os.makedirs(output_path, exist_ok=True)
 
     plt.tight_layout()
-    plt.savefig(f"{output_path}/boxplot.png", dpi=300)
+    plt.savefig(f"{output_path}/{title}_boxplot.png", dpi=300)
     plt.close()
 
-def plot_single_boxplot(df, column, label, output_path):
+def plot_single_boxplot(df, column, label, output_path, title):
 
     # n-Werte sortieren
     n_values = sorted(df["n"].unique())
@@ -100,15 +109,15 @@ def plot_single_boxplot(df, column, label, output_path):
     
 
     plt.grid(True, which="both", linestyle="--", alpha=0.4)
-
+    plt.title(title)
     # Ordner sicherstellen
     os.makedirs(output_path, exist_ok=True)
 
     plt.tight_layout()
-    plt.savefig(f"{output_path}/boxplot_{column}.png", dpi=300)
+    plt.savefig(f"{output_path}/{title}_boxplot_{column}.png", dpi=300)
     plt.close()
 
-def plot_median(df, col1, col2, label1, label2, output_path):
+def plot_median(df, col1, col2, label1, label2, output_path, title):
 
     n_values = sorted(df["n"].unique())
     medians = df.groupby("n")[[col1, col2]].median().reindex(n_values)
@@ -117,8 +126,8 @@ def plot_median(df, col1, col2, label1, label2, output_path):
 
     plt.figure()
 
-    plt.plot(x, medians[col1], marker="o", label=label1)
-    plt.plot(x, medians[col2], marker="o", label=label2)
+    plt.plot(x, medians[col1], marker="o", label=label1, color=blue)
+    plt.plot(x, medians[col2], marker="o", label=label2, color=purple)
 
     plt.xticks(x, n_values)
     plt.yscale("log")
@@ -127,10 +136,11 @@ def plot_median(df, col1, col2, label1, label2, output_path):
     plt.xlabel("Input size (n)")
     plt.ylabel("Median runtime (log scale)")
     plt.legend()
+    plt.title(title)
 
     plt.grid(True, linestyle="--", alpha=0.4)
 
     os.makedirs(output_path, exist_ok=True)
 
-    plt.savefig(f"{output_path}/median.png")
+    plt.savefig(f"{output_path}/{title}_median.png")
     plt.close()

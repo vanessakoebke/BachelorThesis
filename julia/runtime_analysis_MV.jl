@@ -37,7 +37,9 @@ java_path  = joinpath(base, "..", "results", "java_results_ejml_nc.csv")
 julia_path = joinpath(base, "..", "results", "julia_results_MV_withoutTypAnnotation.csv")
 julia_ann_path = joinpath(base, "..", "results", "julia_results_MV_withTypAnnotation.csv")
 rust_path = joinpath(base, "..", "results", "rust_results_MV.csv")
+rust_opt_path = joinpath(base, "..", "results", "rust_results_MV_opt.csv")
 cpp_path = joinpath(base, "..", "results", "cpp_results_MV.csv")
+cpp_opt_path = joinpath(base, "..", "results", "cpp_results_MV_opt.csv")
 
 # =========================
 # 1. Daten laden
@@ -53,13 +55,17 @@ java_mm = load_runtime_results(java_path, :time_java)
 julia_mm = load_runtime_results(julia_path, :time_julia)
 julia_ann_mm = load_runtime_results(julia_ann_path, :time_julia_ann)
 rust_mm = load_runtime_results(rust_path, :time_rust)
+rust_opt_mm = load_runtime_results(rust_opt_path, :time_rust_opt)
 cpp_mm = load_runtime_results(cpp_path, :time_cpp)
+cpp_opt_mm = load_runtime_results(cpp_opt_path, :time_cpp_opt)
 
 # Join
 df = innerjoin(java_mm, julia_mm, on=:file, makeunique=true)
 df = innerjoin(df, julia_ann_mm, on=:file, makeunique=true)
 df = innerjoin(df, rust_mm, on=:file, makeunique=true)
+df = innerjoin(df, rust_opt_mm, on=:file, makeunique=true)
 df = innerjoin(df, cpp_mm, on=:file, makeunique=true)
+df = innerjoin(df, cpp_opt_mm, on=:file, makeunique=true)
 
 # =========================
 # 2. n aus Dateiname extrahieren
@@ -77,7 +83,9 @@ med = combine(groupby(df, :n),
     :time_julia => median => :julia_med,
     :time_julia_ann => median => :julia_ann_med,
     :time_rust => median => :rust_med,
-    :time_cpp => median => :cpp_med
+    :time_rust_opt => median => :rust_opt_med,
+    :time_cpp => median => :cpp_med,
+    :time_cpp_opt => median => :cpp_opt_med
 )
 
 sort!(med, :n)
@@ -101,7 +109,7 @@ plot(x, med.java_med,
     yscale=:log10,
     grid=true,
     minorgrid=true,
-    legend=:outertopright,
+    legend=:topleft,
     size=(1100, 650),
     dpi=300,
     framestyle=:box,
@@ -111,12 +119,14 @@ plot(x, med.java_med,
 plot_runtime_series!(x, med.julia_med, "Julia ohne Typannotation", :dodgerblue3, :square, :dash)
 plot_runtime_series!(x, med.julia_ann_med, "Julia mit Typannotation", :deepskyblue4, :hexagon, :dot)
 plot_runtime_series!(x, med.rust_med, "Rust", :darkorange2, :diamond, :dashdot)
-plot_runtime_series!(x, med.cpp_med, "C++", :forestgreen, :utriangle, :solid)    
+plot_runtime_series!(x, med.rust_opt_med, "Rust BLAS", :red3, :star5, :solid)
+plot_runtime_series!(x, med.cpp_med, "C++", :forestgreen, :utriangle, :solid)
+plot_runtime_series!(x, med.cpp_opt_med, "C++ BLAS", :darkgreen, :dtriangle, :dash)    
 
 # X-Achse als Kategorien
 xticks!(x, string.(n_vals))
 
-all_times = vcat(med.java_med, med.julia_med, med.julia_ann_med, med.rust_med, med.cpp_med)
+all_times = vcat(med.java_med, med.julia_med, med.julia_ann_med, med.rust_med, med.rust_opt_med, med.cpp_med, med.cpp_opt_med)
 yt = exp10.(floor(log10(minimum(all_times))) :
             ceil(log10(maximum(all_times))))
 
@@ -141,7 +151,7 @@ relative_plot = plot(x, ones(length(x)),
     seriescolor=:black,
     grid=true,
     minorgrid=true,
-    legend=:outertopright,
+    legend=:topleft,
     size=(1100, 650),
     dpi=300,
     framestyle=:box,
@@ -151,7 +161,9 @@ relative_plot = plot(x, ones(length(x)),
 plot_runtime_series!(x, med.julia_med ./ med.java_med, "Julia ohne Typannotation", :dodgerblue3, :square, :dash)
 plot_runtime_series!(x, med.julia_ann_med ./ med.java_med, "Julia mit Typannotation", :deepskyblue4, :hexagon, :dot)
 plot_runtime_series!(x, med.rust_med ./ med.java_med, "Rust", :darkorange2, :diamond, :dashdot)
+plot_runtime_series!(x, med.rust_opt_med ./ med.java_med, "Rust BLAS", :red3, :star5, :solid)
 plot_runtime_series!(x, med.cpp_med ./ med.java_med, "C++", :forestgreen, :utriangle, :solid)
+plot_runtime_series!(x, med.cpp_opt_med ./ med.java_med, "C++ BLAS", :darkgreen, :dtriangle, :dash)
 
 xticks!(x, string.(n_vals))
 xlabel!("Eingabegröße (n)")
@@ -165,6 +177,8 @@ savefig(relative_plot, joinpath(base, "..", "results", "runtime_comparison_mv_re
 med.speedup_java_vs_julia = med.java_med ./ med.julia_med
 med.speedup_java_vs_julia_ann = med.java_med ./ med.julia_ann_med
 med.speedup_java_vs_rust = med.java_med ./ med.rust_med
+med.speedup_java_vs_rust_opt = med.java_med ./ med.rust_opt_med
 med.speedup_java_vs_cpp = med.java_med ./ med.cpp_med
+med.speedup_java_vs_cpp_opt = med.java_med ./ med.cpp_opt_med
 
-println(med[:, [:n, :speedup_java_vs_julia, :speedup_java_vs_julia_ann, :speedup_java_vs_rust, :speedup_java_vs_cpp]])
+println(med[:, [:n, :speedup_java_vs_julia, :speedup_java_vs_julia_ann, :speedup_java_vs_rust, :speedup_java_vs_rust_opt, :speedup_java_vs_cpp, :speedup_java_vs_cpp_opt]])

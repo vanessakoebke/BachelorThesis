@@ -1,7 +1,42 @@
+use std::os::raw::{c_double, c_int};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use ndarray::prelude::*;
-use ndarray_linalg::blas::c::*;
+const CBLAS_ROW_MAJOR: c_int = 101;
+const CBLAS_NO_TRANS: c_int = 111;
+
+extern "C" {
+    fn cblas_dgemm(
+        order: c_int,
+        trans_a: c_int,
+        trans_b: c_int,
+        m: c_int,
+        n: c_int,
+        k: c_int,
+        alpha: c_double,
+        a: *const c_double,
+        lda: c_int,
+        b: *const c_double,
+        ldb: c_int,
+        beta: c_double,
+        c: *mut c_double,
+        ldc: c_int,
+    );
+
+    fn cblas_dgemv(
+        order: c_int,
+        trans: c_int,
+        m: c_int,
+        n: c_int,
+        alpha: c_double,
+        a: *const c_double,
+        lda: c_int,
+        x: *const c_double,
+        inc_x: c_int,
+        beta: c_double,
+        y: *mut c_double,
+        inc_y: c_int,
+    );
+}
 
 /// =========================
 /// strong_dis_mm (BLAS GEMM)
@@ -74,9 +109,9 @@ pub fn strong_dis_mv_opt(f: &[f64], n: usize, a: usize, b: usize) -> bool {
 fn matmul_blas(a: &[f64], b: &[f64], c: &mut [f64], n: usize) {
     unsafe {
         cblas_dgemm(
-            CblasRowMajor,
-            CblasNoTrans,
-            CblasNoTrans,
+            CBLAS_ROW_MAJOR,
+            CBLAS_NO_TRANS,
+            CBLAS_NO_TRANS,
             n as i32,
             n as i32,
             n as i32,
@@ -98,8 +133,8 @@ fn matmul_blas(a: &[f64], b: &[f64], c: &mut [f64], n: usize) {
 fn matvec_blas(matrix: &[f64], x: &[f64], y: &mut [f64], n: usize, scale: f64) {
     unsafe {
         cblas_dgemv(
-            CblasRowMajor,
-            CblasNoTrans,
+            CBLAS_ROW_MAJOR,
+            CBLAS_NO_TRANS,
             n as i32,
             n as i32,
             scale,
@@ -171,10 +206,7 @@ mod tests {
 
     #[test]
     fn mm_and_mv_return_true_for_simple_asymmetric_case() {
-        let f = vec![
-            0.0, 1.0,
-            0.0, 0.0,
-        ];
+        let f = vec![0.0, 1.0, 0.0, 0.0];
 
         assert!(strong_dis_mm_opt(&f, 2, 0, 1));
         assert!(strong_dis_mv_opt(&f, 2, 0, 1));
@@ -182,10 +214,7 @@ mod tests {
 
     #[test]
     fn mm_and_mv_return_false_when_arguments_are_equal() {
-        let f = vec![
-            1.0, 0.0,
-            0.0, 1.0,
-        ];
+        let f = vec![1.0, 0.0, 0.0, 1.0];
 
         assert!(!strong_dis_mm_opt(&f, 2, 0, 0));
         assert!(!strong_dis_mv_opt(&f, 2, 0, 0));

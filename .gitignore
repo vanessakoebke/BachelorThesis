@@ -12,3 +12,4 @@ input/*
 analysis/.DS_Store
 input/.DS_Store
 /bin/
+/results/

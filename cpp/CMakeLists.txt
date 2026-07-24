@@ -9,12 +9,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(strongdis_runtime
     src/io.cpp
     src/strong_dis.cpp
+    src/strong_dis_opt.cpp
 )
 
 target_include_directories(strongdis_runtime PUBLIC include)
 target_compile_definitions(strongdis_runtime PUBLIC PROJECT_ROOT="${CMAKE_CURRENT_LIST_DIR}/..")
 
 if(APPLE)
+    target_compile_definitions(strongdis_runtime PUBLIC ACCELERATE_NEW_LAPACK)
     execute_process(
         COMMAND xcrun --show-sdk-path
         OUTPUT_VARIABLE MACOS_SDK_PATH
@@ -27,6 +29,7 @@ if(APPLE)
             -I${MACOS_SDK_PATH}/usr/include/c++/v1
         )
     endif()
+    target_link_libraries(strongdis_runtime PUBLIC "-framework Accelerate")
 endif()
 
 if(MSVC)
@@ -40,6 +43,12 @@ target_link_libraries(benchmark_strong_dis_mm PRIVATE strongdis_runtime)
 
 add_executable(benchmark_strong_dis_mv src/bin/benchmark_strong_dis_mv.cpp)
 target_link_libraries(benchmark_strong_dis_mv PRIVATE strongdis_runtime)
+
+add_executable(benchmark_strong_dis_mm_opt src/bin/benchmark_strong_dis_mm_opt.cpp)
+target_link_libraries(benchmark_strong_dis_mm_opt PRIVATE strongdis_runtime)
+
+add_executable(benchmark_strong_dis_mv_opt src/bin/benchmark_strong_dis_mv_opt.cpp)
+target_link_libraries(benchmark_strong_dis_mv_opt PRIVATE strongdis_runtime)
 
 add_executable(result_validation src/bin/result_validation.cpp)
 target_link_libraries(result_validation PRIVATE strongdis_runtime)

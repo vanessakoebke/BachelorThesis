@@ -9,6 +9,8 @@ cmake -S cpp -B cpp/build -DCMAKE_BUILD_TYPE=Release
 cmake --build cpp/build
 ./cpp/build/benchmark_strong_dis_mm
 ./cpp/build/benchmark_strong_dis_mv
+./cpp/build/benchmark_strong_dis_mm_opt
+./cpp/build/benchmark_strong_dis_mv_opt
 ./cpp/build/result_validation
 ```
 
@@ -18,6 +20,8 @@ Or from this folder with Make:
 make
 ./build/benchmark_strong_dis_mm
 ./build/benchmark_strong_dis_mv
+./build/benchmark_strong_dis_mm_opt
+./build/benchmark_strong_dis_mv_opt
 ./build/result_validation
 ```
 
@@ -28,6 +32,8 @@ The benchmark outputs are written to:
 
 - `../results/cpp_results_MM.csv`
 - `../results/cpp_results_MV.csv`
+- `../results/cpp_results_MM_opt.csv`
+- `../results/cpp_results_MV_opt.csv`
 
 `result_validation` compares `../results/java_results_ejml_nc.csv` with
 `../results/cpp_results_MV.csv` by default. You can pass two CSV paths to compare
