@@ -152,7 +152,7 @@ public class PTIME_Algorithm {
     }
     
 
-    public static void equivDis_Optimal(double[][] array, int a, int b) {
-        // TODO Auto-generated method stub
+    public static boolean equivDis_Optimal(double[][] array, int a, int b) {
+        return equivDis_Parallel(array, a, b);
     }
 }

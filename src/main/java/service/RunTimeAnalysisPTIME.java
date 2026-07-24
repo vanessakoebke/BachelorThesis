@@ -17,6 +17,7 @@ public class RunTimeAnalysisPTIME {
    
     
     public static void equivDis_parallel_vs_sequential_size(int[] inputSize, double inputDensity, int repetitions) {
+        System.out.println("Starting PTime EquivDis");
         // Warm-up for JIT
         DefaultDungTheoryGenerator generator = new DefaultDungTheoryGenerator(10, inputDensity);
         for (int i = 0; i < 1000; i++) {
@@ -48,6 +49,7 @@ public class RunTimeAnalysisPTIME {
                 long durationSeq = endSeq - startSeq;
                 long durationPara = endPara - startPara;
                 output.add( size + "," + i + "," + String.valueOf(durationSeq) + "," + String.valueOf(durationPara));
+                System.out.println("Input size " + size + ", Iteration " + i + " completed");
             } 
         }
         String fileName = "PTIME_EquivDis_sequential_parallel" + "_" + LocalDate.now() + "_" + LocalTime.now();
@@ -57,6 +59,7 @@ public class RunTimeAnalysisPTIME {
     
     
     public static void strongerDis_parallel_vs_sequential_size(int[] inputSize, double inputDensity, int repetitions) {
+        System.out.println("Starting PTime StrongerDis");
         // Warm-up for JIT
         DefaultDungTheoryGenerator generator = new DefaultDungTheoryGenerator(10, inputDensity);
         for (int i = 0; i < 1000; i++) {
@@ -88,6 +91,7 @@ public class RunTimeAnalysisPTIME {
                 long durationSeq = endSeq - startSeq;
                 long durationPara = endPara - startPara;
                 output.add( size + "," + i + "," + String.valueOf(durationSeq) + "," + String.valueOf(durationPara));
+                System.out.println("Input size " + size + ", Iteration " + i + " completed");
             } 
         }
         String fileName = "PTIME_StrongerDis_sequential_parallel" + "_" + LocalDate.now() + "_" + LocalTime.now();

@@ -37,13 +37,13 @@ public class JuliaComparison {
                     // Warm-up
                     for (int i = 0; i < 10; i++) {
                         //PTIME_Algorithm.strongDis_Sequential(matrix, inst.a(), inst.b());
-                        NC_Algorithm.strongDis_Sequential(matrix, inst.a(), inst.b());
+                        NC_Algorithm.strongerDis_Sequential(matrix, inst.a(), inst.b());
                     }
 
                     // Actual test
                     long start = System.nanoTime();
                     //boolean r = PTIME_Algorithm.strongDis_Sequential(matrix, inst.a(), inst.b());
-                    boolean r = NC_Algorithm.strongDis_Sequential(matrix, inst.a(), inst.b());
+                    boolean r = NC_Algorithm.strongerDis_Sequential(matrix, inst.a(), inst.b());
                     long end = System.nanoTime();
 
                     double time = end - start;

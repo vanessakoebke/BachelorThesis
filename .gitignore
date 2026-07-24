@@ -11,3 +11,4 @@ input/*
 .DS_Store
 analysis/.DS_Store
 input/.DS_Store
+/bin/

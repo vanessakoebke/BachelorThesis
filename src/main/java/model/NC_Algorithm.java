@@ -120,7 +120,7 @@ public class NC_Algorithm {
         }
     }
     
-    public static boolean strongDis_Parallel(double[][] F, int a, int b) {
+    public static boolean strongerDis_Parallel(double[][] F, int a, int b) {
         int num_arguments = F.length;
         double[] v1 = new double[num_arguments];
         double[] v2 = new double[num_arguments];
@@ -173,7 +173,7 @@ public class NC_Algorithm {
         return false;
     }
     
-    public static boolean strongDis_spaceOptimized(DungTheory F, int a, int b) {
+    public static boolean strongerDis_spaceOptimized(DungTheory F, int a, int b) {
         int num_arguments = F.getNumberOfNodes();
         double[] v1 = new double[num_arguments];
         double[] v2 = new double[num_arguments];
@@ -228,7 +228,7 @@ public class NC_Algorithm {
         return false;
     }
     
-    public static boolean strongDis_Sequential(SimpleMatrix F, int a, int b) {
+    public static boolean strongerDis_Sequential(SimpleMatrix F, int a, int b) {
         int num_arguments = F.getNumRows();
         SimpleMatrix v1 = new SimpleMatrix(num_arguments, 1);
         SimpleMatrix v2 = new SimpleMatrix(num_arguments, 1);
@@ -237,6 +237,7 @@ public class NC_Algorithm {
         //Optimized test for zeroness
         for (int iter = 1; iter <= 2*num_arguments; iter++) {
             int r = ThreadLocalRandom.current().nextInt(1, 2*K * num_arguments + 1);
+            //int r = 1;
             SimpleMatrix v1New =F.mult(v1).scale(r);
             SimpleMatrix v2New =F.mult(v2).scale(r);
             v1 = v1New;
@@ -244,6 +245,7 @@ public class NC_Algorithm {
             double sumV1 = v1.elementSum();
             double sumV2 = v2.elementSum();
             if (Math.abs(sumV1 - sumV2) > 1e-9) { //For big matrices and big r, risk of rounding errors, therefore approximate comparison
+                System.out.println("Iteration: " + iter + ", sum1 = " + sumV1 + ", sum2 = " + sumV2);
                 if (iter % 2 != 0) {
                     if (sumV1 > sumV2) {
                         return false;

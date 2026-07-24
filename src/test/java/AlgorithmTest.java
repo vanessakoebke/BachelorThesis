@@ -27,7 +27,7 @@ public class AlgorithmTest {
         LatticePartialOrder<Argument, DungTheory> ranking = referenceAlgo.getModel(af);
         boolean reference = ranking.isStrictlyMoreOrEquallyAcceptableThan(a, b);
         boolean ptime = PTIME_Algorithm.strongerDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
-        boolean nc = NC_Algorithm.strongDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
+        boolean nc = NC_Algorithm.strongerDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
         assertTrue(reference ==ptime && reference == nc);
     }
 
