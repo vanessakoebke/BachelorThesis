@@ -97,6 +97,47 @@ public class RunTimeAnalysisNC {
         Util.writeOutput(fileName, output);
     }
     
+    public static void strongerDis_optimal1_vs_spaceOptimized_size(int[] inputSize, double inputDensity, int repetitions) {
+        System.out.println("Starting NC StrongerDis space optimized");
+        // Warm-up for JIT
+        DefaultDungTheoryGenerator generator = new DefaultDungTheoryGenerator(10, inputDensity);
+        for (int i = 0; i < 1000; i++) {
+            DungTheory aaf =generator.next();
+            double[][] array = aaf.getAdjacencyArray();
+
+            int a = ThreadLocalRandom.current().nextInt(0, 10);
+            int b = ThreadLocalRandom.current().nextInt(0, 10);
+
+            NC_Algorithm.strongerDis_Optimal1(array, a, b);
+            NC_Algorithm.strongerDis_spaceOptimized(aaf, a, b);
+        }
+        //Actual tests
+        List<String> output = new ArrayList<>();
+        output.add("n,run,time_opt1,time_spaceOpti");
+        for (int size : inputSize) {
+            //Input generation for real input
+            generator = new DefaultDungTheoryGenerator(size, inputDensity);
+            DungTheory aaf =generator.next();
+            double[][] array = aaf.getAdjacencyArray();
+            for (int i = 1; i <= repetitions; i++) {
+                int a = ThreadLocalRandom.current().nextInt(0, size);
+                int b = ThreadLocalRandom.current().nextInt(0, size);
+                long startSpace = System.nanoTime();
+                NC_Algorithm.strongerDis_spaceOptimized(aaf, a, b);
+                long endSpace = System.nanoTime();
+                long startOpt = System.nanoTime();
+                NC_Algorithm.strongerDis_Optimal1(array, a, b);
+                long endOpt = System.nanoTime();
+                long durationSpace = endSpace - startSpace;
+                long durationOpt = endOpt - startOpt;
+                output.add( size + "," + i + "," + String.valueOf(durationOpt) + "," + String.valueOf(durationSpace));
+                System.out.println("Input size " + size + ", Iteration " + i + " completed");
+            } 
+        }
+        String fileName = "NC_StrongerDis_opt1_spaceOptimized" + "_" + LocalDate.now() + "_" + LocalTime.now();
+        Util.writeOutput(fileName, output);
+    }
+    
     public static void strongerDis_parallel_vs_sequential_size(int[] inputSize, double inputDensity, int repetitions) {
         System.out.println("Starting NC StrongerDis");
         // Warm-up for JIT

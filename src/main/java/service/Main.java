@@ -11,14 +11,14 @@ public class Main {
             
             //RQ 2.1
             //RunTimeAnalysisNC.strongerDis_parallel_vs_sequential_size(inputSizes, 0.5, 1000);
-            RunTimeAnalysisPTIME.strongerDis_parallel_vs_sequential_size(inputSizes, 0.5, 1000);
+            //RunTimeAnalysisPTIME.strongerDis_parallel_vs_sequential_size(inputSizes, 0.5, 1000);
             
             //RQ 1.2 and 2.2
             //RunTimeAnalysisNC.equivDis_optimal1_vs_spaceOptimized_size(inputSizes, 0.5, 1000);
             //RunTimeAnalysisNC.strongerDis_optimal1_vs_spaceOptimized_size(inputSizes, 0.5, 1000);
             
             //RQ 1.3
-            //RunTimeAnalysis.equivDis_NCvsPTIME(0, 0);
+            RunTimeAnalysis.equivDis_NCvsPTIME();
             
             
         } catch (Exception e) {

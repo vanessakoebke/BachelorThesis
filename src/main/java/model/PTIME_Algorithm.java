@@ -155,4 +155,8 @@ public class PTIME_Algorithm {
     public static boolean equivDis_Optimal(double[][] array, int a, int b) {
         return equivDis_Parallel(array, a, b);
     }
+    
+    public static boolean strongerDis_Optimal(double[][] array, int a, int b) {
+        return strongerDis_Parallel(array, a, b);
+    }
 }

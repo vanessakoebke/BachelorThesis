@@ -1,58 +1,82 @@
 package service;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.ejml.simple.SimpleMatrix;
 import org.tweetyproject.arg.dung.util.DefaultDungTheoryGenerator;
 
-import model.NC_Algorithm;
-import model.PTIME_Algorithm;
+import io.Util;
+import model.*;
 
 public class RunTimeAnalysis {
-    public static void equivDis_NCvsPTIME(int inputSize, int repetitions) {
-        // Warm-up for JIT
-        DefaultDungTheoryGenerator generator = new DefaultDungTheoryGenerator(10, 0.8);
-        for (int i = 0; i < 1000; i++) {
-            double[][] array = generator.next().getAdjacencyArray();
-
-            int a = ThreadLocalRandom.current().nextInt(0, 10);
-            int b = ThreadLocalRandom.current().nextInt(0, 10);
-
-            PTIME_Algorithm.equivDis_Optimal(array, a, b);
-            NC_Algorithm.equivDis_Optimal(array, a, b);
+    public static void equivDis_NCvsPTIME() {
+        File folder = new File("ICCMA");
+        File[] subfolders = folder.listFiles();
+        if (subfolders == null) {
+            System.out.println("Folder not found or empty");
+            return;
         }
-        //Input generation for real input
-        generator = new DefaultDungTheoryGenerator(inputSize, 0.8);
-        SimpleMatrix matrix = new SimpleMatrix(generator.next().getAdjacencyArray());
-        
-        //Actual tests
-        String[] output = new String[repetitions +1];
-        output[0] = "PTime, NC";
-        for (int i = 1; i <= repetitions; i++) {
-            int a = ThreadLocalRandom.current().nextInt(0, inputSize);
-            int b = ThreadLocalRandom.current().nextInt(0, inputSize);
-            long startP = System.nanoTime();
-            PTIME_Algorithm.equivDis_Sequential(matrix, a, b);
-            long endP = System.nanoTime();
-            long startNC = System.nanoTime();
-            NC_Algorithm.equivDis_Sequential_DoubleMatrix(matrix, a, b);
-            long endNC = System.nanoTime();
-            long durationP = endP - startP;
-            long durationNC = endNC - startNC;
-            output[i] = String.valueOf(durationP) + ", " + String.valueOf(durationNC);
-        }
-        String fileName = "n" + inputSize + "_rep" + repetitions + "_" + LocalDate.now() + "_" + LocalTime.now();
-        try {
-            Files.write(Path.of("Output/" + fileName + ".csv"), java.util.Arrays.asList(output));
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        for (File subfolder : subfolders) {
+            List<String> results = new ArrayList<>();
+            results.add("file,run,time_NC,time_PTime");
+            File[] files = subfolder.listFiles();
+            if (files == null) {
+                System.out.println("Subfolder not found or empty");
+                continue;
+            }
+            for (File file : files) {
+                if (file.isFile() && file.getName().endsWith(".af")) {
+                    try {
+                        double[][] matrix = Util.readICCMA(file.toPath());
+                        // Warm-up
+                        for (int i = 0; i < 10; i++) {
+                            PTIME_Algorithm.equivDis_Optimal(matrix, 1, 2);
+                            NC_Algorithm.equivDis_Optimal(matrix, 1, 2);
+                        }
+                        // Actual test
+                        for (int i = 1; i <= 1000; i++) {
+                            System.out.println("Processing: " + file.getName() + ", Iteration " + i);
+                            int a = ThreadLocalRandom.current().nextInt(0, matrix.length);
+                            int b = ThreadLocalRandom.current().nextInt(0, matrix.length);
+                            long start_NC = System.nanoTime();
+                            // boolean r = PTIME_Algorithm.strongDis_Sequential(matrix, inst.a(), inst.b());
+                            NC_Algorithm.equivDis_Optimal(matrix, a, b);
+                            long end_NC = System.nanoTime();
+                            double time_NC = end_NC - start_NC;
+                            long start_P = System.nanoTime();
+                            // boolean r = PTIME_Algorithm.strongDis_Sequential(matrix, inst.a(), inst.b());
+                            NC_Algorithm.equivDis_Optimal(matrix, a, b);
+                            long end_P = System.nanoTime();
+                            double time_P = end_P - start_P;
+                            // CSV line
+                            results.add(file.getName() + "," + i + "," + time_NC + "," + time_P);
+                        }
+                    } catch (Exception e) {
+                        System.out.println(file.getName());
+                        e.printStackTrace();
+                        continue;
+                    }
+                }
+            }
+            
+            // write file
+            
+            try (BufferedWriter w = new BufferedWriter(
+                    new FileWriter("Output/EquivDis_NC_PTime_" + subfolder.getName() + "_" + LocalDate.now() + "_" + LocalTime.now() + ".csv"))) {
+                for (String line : results) {
+                    w.write(line);
+                    w.newLine();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
-
 }

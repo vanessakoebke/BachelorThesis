@@ -40,7 +40,7 @@ public class Util {
         matrix = new double[max][max];
         
         for (int[] elem: inputList) {
-            matrix[elem[0]][elem[1]] = 1;
+            matrix[elem[0]-1][elem[1]-1] = 1;
         }
         } catch (IOException e) {
             System.out.println("Iterating through the ICCMA folder failed.");

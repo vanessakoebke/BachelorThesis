@@ -18,7 +18,7 @@ public class NC_Algorithm {
         v2[b] = 1; //second argument
         //Optimized test for zeroness
         for (int iter = 1; iter <= 2*num_arguments; iter++) {
-            int r = ThreadLocalRandom.current().nextInt(1, 2*K * num_arguments + 1);
+            //int r = ThreadLocalRandom.current().nextInt(1, 2*K * num_arguments + 1);
             //Parallelization starts here
             //Calculate each line of v parallely
             double[] v1Old = v1.clone(); //necessary because Lambda expression requires final or effectively final variable
@@ -32,8 +32,8 @@ public class NC_Algorithm {
                     sum1 += F[i][j] * v1Old[j];
                     sum2 += F[i][j] * v2Old[j];
                 }
-                v1New[i] = sum1 * r;
-                v2New[i] = sum2 * r;
+                v1New[i] = sum1;
+                v2New[i] = sum2;
             });
             v1 = v1New;
             v2 = v2New;
@@ -58,7 +58,7 @@ public class NC_Algorithm {
         v2[b] = 1; //second argument
         //Optimized test for zeroness
         for (int iter = 1; iter <= 2*num_arguments; iter++) {
-            int r = ThreadLocalRandom.current().nextInt(1, 2*K * num_arguments + 1);
+            //int r = ThreadLocalRandom.current().nextInt(1, 2*K * num_arguments + 1);
             //Parallelization starts here
             //Calculate each line of v parallely
             double[] v1Old = v1.clone(); //necessary because Lambda expression requires final or effectively final variable
@@ -74,8 +74,8 @@ public class NC_Algorithm {
                         sum2 += v2Old[j];
                     }
                 }
-                v1New[i] = sum1 * r;
-                v2New[i] = sum2 * r;
+                v1New[i] = sum1;
+                v2New[i] = sum2;
             });
             v1 = v1New;
             v2 = v2New;
@@ -100,9 +100,9 @@ public class NC_Algorithm {
         v2.set(b, 0, 1); //second argument
         //Optimized test for zeroness
         for (int iter = 1; iter <= 2*num_arguments; iter++) {
-            int r = ThreadLocalRandom.current().nextInt(1, 2*K * num_arguments + 1);
-            SimpleMatrix v1New =F.mult(v1).scale(r);
-            SimpleMatrix v2New =F.mult(v2).scale(r);
+            //int r = ThreadLocalRandom.current().nextInt(1, 2*K * num_arguments + 1);
+            SimpleMatrix v1New =F.mult(v1);
+            SimpleMatrix v2New =F.mult(v2);
             v1 = v1New;
             v2 = v2New;
             if (Math.abs(v1.elementSum() - v2.elementSum()) > 1e-9) { //For big matrices and big r, risk of rounding errors, therefore approximate comparison
@@ -120,6 +120,30 @@ public class NC_Algorithm {
         }
     }
     
+    public static boolean equivDis_Optimal(double[][] F, int a, int b) {
+        if (F.length < 100) {
+            return equivDis_Sequential(new SimpleMatrix(F), a, b);
+        } else {
+            return equivDis_Parallel(F, a, b);
+        }
+    }
+    
+    public static boolean strongerDis_Optimal1(double[][] F, int a, int b) {
+        if (F.length < 100) {
+            return strongerDis_Sequential(new SimpleMatrix(F), a, b);
+        } else {
+            return strongerDis_Parallel(F, a, b);
+        }
+    }
+    
+    public static boolean strongerDis_Optimal(double[][] F, int a, int b) {
+        if (F.length < 100) {
+            return strongerDis_Sequential(new SimpleMatrix(F), a, b);
+        } else {
+            return strongerDis_Parallel(F, a, b);
+        }
+    }
+    
     public static boolean strongerDis_Parallel(double[][] F, int a, int b) {
         int num_arguments = F.length;
         double[] v1 = new double[num_arguments];
@@ -128,7 +152,7 @@ public class NC_Algorithm {
         v2[b] = 1; //second argument
         //Optimized test for zeroness
         for (int iter = 1; iter <= 2*num_arguments; iter++) {
-            int r = ThreadLocalRandom.current().nextInt(1, 2*K * num_arguments + 1);
+            //int r = ThreadLocalRandom.current().nextInt(1, 2*K * num_arguments + 1);
             //Parallelization starts here
             //Calculate each line of v parallely
             double[] v1Old = v1.clone(); //necessary because Lambda expression requires final or effectively final variable
@@ -142,8 +166,8 @@ public class NC_Algorithm {
                     sum1 += F[i][j] * v1Old[j];
                     sum2 += F[i][j] * v2Old[j];
                 }
-                v1New[i] = sum1 * r;
-                v2New[i] = sum2 * r;
+                v1New[i] = sum1;
+                v2New[i] = sum2;
             });
             v1 = v1New;
             v2 = v2New;
@@ -181,7 +205,7 @@ public class NC_Algorithm {
         v2[b] = 1; //second argument
         //Optimized test for zeroness
         for (int iter = 1; iter <= 2*num_arguments; iter++) {
-            int r = ThreadLocalRandom.current().nextInt(1, 2*K * num_arguments + 1);
+            //int r = ThreadLocalRandom.current().nextInt(1, 2*K * num_arguments + 1);
             //Parallelization starts here
             //Calculate each line of v parallely
             double[] v1Old = v1.clone(); //necessary because Lambda expression requires final or effectively final variable
@@ -197,8 +221,8 @@ public class NC_Algorithm {
                         sum2 += v2Old[j];
                     }
                 }
-                v1New[i] = sum1 * r;
-                v2New[i] = sum2 * r;
+                v1New[i] = sum1;
+                v2New[i] = sum2;
             });
             v1 = v1New;
             v2 = v2New;
@@ -236,16 +260,16 @@ public class NC_Algorithm {
         v2.set(b, 0, 1); //second argument
         //Optimized test for zeroness
         for (int iter = 1; iter <= 2*num_arguments; iter++) {
-            int r = ThreadLocalRandom.current().nextInt(1, 2*K * num_arguments + 1);
+            //int r = ThreadLocalRandom.current().nextInt(1, 2*K * num_arguments + 1);
             //int r = 1;
-            SimpleMatrix v1New =F.mult(v1).scale(r);
-            SimpleMatrix v2New =F.mult(v2).scale(r);
+            SimpleMatrix v1New =F.mult(v1);
+            SimpleMatrix v2New =F.mult(v2);
             v1 = v1New;
             v2 = v2New;
             double sumV1 = v1.elementSum();
             double sumV2 = v2.elementSum();
             if (Math.abs(sumV1 - sumV2) > 1e-9) { //For big matrices and big r, risk of rounding errors, therefore approximate comparison
-                System.out.println("Iteration: " + iter + ", sum1 = " + sumV1 + ", sum2 = " + sumV2);
+                //System.out.println("Iteration: " + iter + ", sum1 = " + sumV1 + ", sum2 = " + sumV2);
                 if (iter % 2 != 0) {
                     if (sumV1 > sumV2) {
                         return false;
