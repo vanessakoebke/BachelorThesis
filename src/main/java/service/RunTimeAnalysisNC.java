@@ -11,7 +11,7 @@ import org.tweetyproject.arg.dung.syntax.DungTheory;
 import org.tweetyproject.arg.dung.util.DefaultDungTheoryGenerator;
 
 import io.Util;
-import model.NC_Algorithm;
+import model.MV_Algorithm;
 
 public class RunTimeAnalysisNC {
    
@@ -27,8 +27,8 @@ public class RunTimeAnalysisNC {
             int a = ThreadLocalRandom.current().nextInt(0, 10);
             int b = ThreadLocalRandom.current().nextInt(0, 10);
 
-            NC_Algorithm.equivDis_Sequential(m, a, b);
-            NC_Algorithm.equivDis_Parallel(array, a, b);
+            MV_Algorithm.equivDis_Sequential(m, a, b);
+            MV_Algorithm.equivDis_Parallel(array, a, b);
         }
         //Actual tests
         List<String> output = new ArrayList<>();
@@ -41,15 +41,18 @@ public class RunTimeAnalysisNC {
                 int a = ThreadLocalRandom.current().nextInt(0, size);
                 int b = ThreadLocalRandom.current().nextInt(0, size);
                 long startSeq = System.nanoTime();
-                NC_Algorithm.equivDis_Sequential(new SimpleMatrix(array), a, b);
+                MV_Algorithm.equivDis_Sequential(new SimpleMatrix(array), a, b);
                 long endSeq = System.nanoTime();
                 long startPara = System.nanoTime();
-                NC_Algorithm.equivDis_Parallel(array, a, b);
+                MV_Algorithm.equivDis_Parallel(array, a, b);
                 long endPara = System.nanoTime();
                 long durationSeq = endSeq - startSeq;
                 long durationPara = endPara - startPara;
                 output.add( size + "," + i + "," + String.valueOf(durationSeq) + "," + String.valueOf(durationPara));
                 System.out.println("Input size " + size + ", Iteration " + i + " completed");
+                if (size < 5000) {
+                    array = generator.next().getAdjacencyArray();
+                }
             } 
         }
         String fileName = "NC_EquivDis_sequential_parallel" + "_" + LocalDate.now() + "_" + LocalTime.now();
@@ -67,8 +70,8 @@ public class RunTimeAnalysisNC {
             int a = ThreadLocalRandom.current().nextInt(0, 10);
             int b = ThreadLocalRandom.current().nextInt(0, 10);
 
-            NC_Algorithm.equivDis_Optimal1(array, a, b);
-            NC_Algorithm.equivDis_SpaceOptimized(aaf, a, b);
+            MV_Algorithm.equivDis_Optimal1(array, a, b);
+            MV_Algorithm.equivDis_SpaceOptimized(aaf, a, b);
         }
         //Actual tests
         List<String> output = new ArrayList<>();
@@ -82,15 +85,18 @@ public class RunTimeAnalysisNC {
                 int a = ThreadLocalRandom.current().nextInt(0, size);
                 int b = ThreadLocalRandom.current().nextInt(0, size);
                 long startSpace = System.nanoTime();
-                NC_Algorithm.equivDis_SpaceOptimized(aaf, a, b);
+                MV_Algorithm.equivDis_SpaceOptimized(aaf, a, b);
                 long endSpace = System.nanoTime();
                 long startOpt = System.nanoTime();
-                NC_Algorithm.equivDis_Optimal1(array, a, b);
+                MV_Algorithm.equivDis_Optimal1(array, a, b);
                 long endOpt = System.nanoTime();
                 long durationSpace = endSpace - startSpace;
                 long durationOpt = endOpt - startOpt;
                 output.add( size + "," + i + "," + String.valueOf(durationOpt) + "," + String.valueOf(durationSpace));
                 System.out.println("Input size " + size + ", Iteration " + i + " completed");
+                if (size < 5000) {
+                    array = generator.next().getAdjacencyArray();
+                }
             } 
         }
         String fileName = "NC_EquivDis_opt1_spaceOptimized" + "_" + LocalDate.now() + "_" + LocalTime.now();
@@ -108,8 +114,8 @@ public class RunTimeAnalysisNC {
             int a = ThreadLocalRandom.current().nextInt(0, 10);
             int b = ThreadLocalRandom.current().nextInt(0, 10);
 
-            NC_Algorithm.strongerDis_Optimal1(array, a, b);
-            NC_Algorithm.strongerDis_spaceOptimized(aaf, a, b);
+            MV_Algorithm.strongerDis_Optimal1(array, a, b);
+            MV_Algorithm.strongerDis_spaceOptimized(aaf, a, b);
         }
         //Actual tests
         List<String> output = new ArrayList<>();
@@ -123,15 +129,18 @@ public class RunTimeAnalysisNC {
                 int a = ThreadLocalRandom.current().nextInt(0, size);
                 int b = ThreadLocalRandom.current().nextInt(0, size);
                 long startSpace = System.nanoTime();
-                NC_Algorithm.strongerDis_spaceOptimized(aaf, a, b);
+                MV_Algorithm.strongerDis_spaceOptimized(aaf, a, b);
                 long endSpace = System.nanoTime();
                 long startOpt = System.nanoTime();
-                NC_Algorithm.strongerDis_Optimal1(array, a, b);
+                MV_Algorithm.strongerDis_Optimal1(array, a, b);
                 long endOpt = System.nanoTime();
                 long durationSpace = endSpace - startSpace;
                 long durationOpt = endOpt - startOpt;
                 output.add( size + "," + i + "," + String.valueOf(durationOpt) + "," + String.valueOf(durationSpace));
                 System.out.println("Input size " + size + ", Iteration " + i + " completed");
+                if (size < 5000) {
+                    array = generator.next().getAdjacencyArray();
+                }
             } 
         }
         String fileName = "NC_StrongerDis_opt1_spaceOptimized" + "_" + LocalDate.now() + "_" + LocalTime.now();
@@ -149,8 +158,8 @@ public class RunTimeAnalysisNC {
             int a = ThreadLocalRandom.current().nextInt(0, 10);
             int b = ThreadLocalRandom.current().nextInt(0, 10);
 
-            NC_Algorithm.strongerDis_Sequential(m, a, b);
-            NC_Algorithm.strongerDis_Parallel(array, a, b);
+            MV_Algorithm.strongerDis_Sequential(m, a, b);
+            MV_Algorithm.strongerDis_Parallel(array, a, b);
         }
         //Actual tests
         List<String> output = new ArrayList<>();
@@ -163,15 +172,18 @@ public class RunTimeAnalysisNC {
                 int a = ThreadLocalRandom.current().nextInt(0, size);
                 int b = ThreadLocalRandom.current().nextInt(0, size);
                 long startSeq = System.nanoTime();
-                NC_Algorithm.strongerDis_Sequential(new SimpleMatrix(array), a, b);
+                MV_Algorithm.strongerDis_Sequential(new SimpleMatrix(array), a, b);
                 long endSeq = System.nanoTime();
                 long startPara = System.nanoTime();
-                NC_Algorithm.strongerDis_Parallel(array, a, b);
+                MV_Algorithm.strongerDis_Parallel(array, a, b);
                 long endPara = System.nanoTime();
                 long durationSeq = endSeq - startSeq;
                 long durationPara = endPara - startPara;
                 output.add( size + "," + i + "," + String.valueOf(durationSeq) + "," + String.valueOf(durationPara));
                 System.out.println("Input size " + size + ", Iteration " + i + " completed");
+                if (size < 5000) {
+                    array = generator.next().getAdjacencyArray();
+                }
             } 
         }
         String fileName = "NC_StrongerDis_sequential_parallel" + "_" + LocalDate.now() + "_" + LocalTime.now();

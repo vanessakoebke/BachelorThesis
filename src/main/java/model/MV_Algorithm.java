@@ -7,7 +7,7 @@ import org.ejml.simple.SimpleMatrix;
 import org.tweetyproject.arg.dung.syntax.Argument;
 import org.tweetyproject.arg.dung.syntax.DungTheory;
 
-public class NC_Algorithm {
+public class MV_Algorithm {
     private static int K = 1000; //K = 1000 leads to a confidence level of (K-1)/K = 99.9%
     
     public static boolean equivDis_Parallel(double[][] F, int a, int b) {

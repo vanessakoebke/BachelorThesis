@@ -11,7 +11,7 @@ import org.tweetyproject.arg.dung.syntax.DungTheory;
 import org.tweetyproject.arg.dung.util.DefaultDungTheoryGenerator;
 
 import io.Util;
-import model.PTIME_Algorithm;
+import model.MM_Algorithm;
 
 public class RunTimeAnalysisPTIME {
    
@@ -27,8 +27,8 @@ public class RunTimeAnalysisPTIME {
             int a = ThreadLocalRandom.current().nextInt(0, 10);
             int b = ThreadLocalRandom.current().nextInt(0, 10);
 
-            PTIME_Algorithm.equivDis_Sequential(m, a, b);
-            PTIME_Algorithm.equivDis_Parallel(array, a, b);
+            MM_Algorithm.equivDis_Sequential(m, a, b);
+            MM_Algorithm.equivDis_Parallel(array, a, b);
         }
         //Actual tests
         List<String> output = new ArrayList<>();
@@ -41,15 +41,18 @@ public class RunTimeAnalysisPTIME {
                 int a = ThreadLocalRandom.current().nextInt(0, size);
                 int b = ThreadLocalRandom.current().nextInt(0, size);
                 long startSeq = System.nanoTime();
-                PTIME_Algorithm.equivDis_Sequential(new SimpleMatrix(array), a, b);
+                MM_Algorithm.equivDis_Sequential(new SimpleMatrix(array), a, b);
                 long endSeq = System.nanoTime();
                 long startPara = System.nanoTime();
-                PTIME_Algorithm.equivDis_Parallel(array, a, b);
+                MM_Algorithm.equivDis_Parallel(array, a, b);
                 long endPara = System.nanoTime();
                 long durationSeq = endSeq - startSeq;
                 long durationPara = endPara - startPara;
                 output.add( size + "," + i + "," + String.valueOf(durationSeq) + "," + String.valueOf(durationPara));
                 System.out.println("Input size " + size + ", Iteration " + i + " completed");
+                if (size < 5000) {
+                    array = generator.next().getAdjacencyArray();
+                }
             } 
         }
         String fileName = "PTIME_EquivDis_sequential_parallel" + "_" + LocalDate.now() + "_" + LocalTime.now();
@@ -69,8 +72,8 @@ public class RunTimeAnalysisPTIME {
             int a = ThreadLocalRandom.current().nextInt(0, 10);
             int b = ThreadLocalRandom.current().nextInt(0, 10);
 
-            PTIME_Algorithm.strongerDis_Sequential(m, a, b);
-            PTIME_Algorithm.strongerDis_Parallel(array, a, b);
+            MM_Algorithm.strongerDis_Sequential(m, a, b);
+            MM_Algorithm.strongerDis_Parallel(array, a, b);
         }
         //Actual tests
         List<String> output = new ArrayList<>();
@@ -83,15 +86,18 @@ public class RunTimeAnalysisPTIME {
                 int a = ThreadLocalRandom.current().nextInt(0, size);
                 int b = ThreadLocalRandom.current().nextInt(0, size);
                 long startSeq = System.nanoTime();
-                PTIME_Algorithm.strongerDis_Sequential(new SimpleMatrix(array), a, b);
+                MM_Algorithm.strongerDis_Sequential(new SimpleMatrix(array), a, b);
                 long endSeq = System.nanoTime();
                 long startPara = System.nanoTime();
-                PTIME_Algorithm.strongerDis_Parallel(array, a, b);
+                MM_Algorithm.strongerDis_Parallel(array, a, b);
                 long endPara = System.nanoTime();
                 long durationSeq = endSeq - startSeq;
                 long durationPara = endPara - startPara;
                 output.add( size + "," + i + "," + String.valueOf(durationSeq) + "," + String.valueOf(durationPara));
                 System.out.println("Input size " + size + ", Iteration " + i + " completed");
+                if (size < 5000) {
+                    array = generator.next().getAdjacencyArray();
+                }
             } 
         }
         String fileName = "PTIME_StrongerDis_sequential_parallel" + "_" + LocalDate.now() + "_" + LocalTime.now();

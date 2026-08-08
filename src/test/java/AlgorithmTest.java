@@ -11,8 +11,8 @@ import org.tweetyproject.arg.dung.util.DefaultDungTheoryGenerator;
 import org.tweetyproject.arg.rankings.reasoner.DiscussionBasedRankingReasoner;
 import org.tweetyproject.comparator.LatticePartialOrder;
 
-import model.NC_Algorithm;
-import model.PTIME_Algorithm;
+import model.MV_Algorithm;
+import model.MM_Algorithm;
 
 public class AlgorithmTest {
  
@@ -26,8 +26,8 @@ public class AlgorithmTest {
         DiscussionBasedRankingReasoner referenceAlgo = new DiscussionBasedRankingReasoner();
         LatticePartialOrder<Argument, DungTheory> ranking = referenceAlgo.getModel(af);
         boolean reference = ranking.isStrictlyMoreOrEquallyAcceptableThan(a, b);
-        boolean ptime = PTIME_Algorithm.strongerDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
-        boolean nc = NC_Algorithm.strongerDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
+        boolean ptime = MM_Algorithm.strongerDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
+        boolean nc = MV_Algorithm.strongerDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
         assertTrue(reference ==ptime && reference == nc);
     }
 
@@ -40,8 +40,8 @@ public class AlgorithmTest {
         DiscussionBasedRankingReasoner referenceAlgo = new DiscussionBasedRankingReasoner();
         LatticePartialOrder<Argument, DungTheory> ranking = referenceAlgo.getModel(af);
         boolean reference = ranking.isEquallyAcceptableThan(a, b);
-        boolean ptime = PTIME_Algorithm.equivDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
-        boolean nc = NC_Algorithm.equivDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
+        boolean ptime = MM_Algorithm.equivDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
+        boolean nc = MV_Algorithm.equivDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
         assertTrue(reference ==ptime && reference == nc);
     }
 

@@ -11,8 +11,8 @@ public class PTIME_Algorithm_Test {
     @RepeatedTest(1000)
     void testEquivDis(){
         DungTheory af = new DefaultDungTheoryGenerator(100, 0.5).next();
-        boolean seq = PTIME_Algorithm.equivDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
-        boolean parallel = PTIME_Algorithm.equivDis_Parallel(af.getAdjacencyArray(), 0, 1);
+        boolean seq = MM_Algorithm.equivDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
+        boolean parallel = MM_Algorithm.equivDis_Parallel(af.getAdjacencyArray(), 0, 1);
         System.out.println( seq + " " + parallel);
         assertTrue(seq == parallel);
     }
@@ -20,8 +20,8 @@ public class PTIME_Algorithm_Test {
     @RepeatedTest(1000)
     void testStrongDis(){
         DungTheory af = new DefaultDungTheoryGenerator(100, 0.5).next();
-        boolean seq = PTIME_Algorithm.strongerDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
-        boolean parallel = PTIME_Algorithm.strongerDis_Parallel(af.getAdjacencyArray(), 0, 1);
+        boolean seq = MM_Algorithm.strongerDis_Sequential(new SimpleMatrix(af.getAdjacencyArray()), 0, 1);
+        boolean parallel = MM_Algorithm.strongerDis_Parallel(af.getAdjacencyArray(), 0, 1);
         System.out.println( seq + " " + parallel);
         assertTrue(seq == parallel);
     }

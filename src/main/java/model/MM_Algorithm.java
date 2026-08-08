@@ -5,7 +5,7 @@ import java.util.stream.IntStream;
 import org.ejml.simple.SimpleMatrix;
 import org.tweetyproject.arg.dung.syntax.DungTheory;
 
-public class PTIME_Algorithm {
+public class MM_Algorithm {
     
     // Implementation using the SimpleMatrix of the EJML library
     public static boolean strongerDis_Sequential(SimpleMatrix F, int a, int b) {

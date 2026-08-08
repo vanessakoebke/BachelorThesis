@@ -1,5 +1,4 @@
 package service;
-import io.Util;
 
 public class Main {
     public static void main(String[] args) {
@@ -16,18 +15,22 @@ public class Main {
             //RQ 1.2 and 2.2
             //RunTimeAnalysisNC.equivDis_optimal1_vs_spaceOptimized_size(inputSizes, 0.5, 1000);
             //RunTimeAnalysisNC.strongerDis_optimal1_vs_spaceOptimized_size(inputSizes, 0.5, 1000);
+            //SpaceTester.spaceLimit();
             
-            //RQ 1.3
-            RunTimeAnalysis.equivDis_NCvsPTIME();
+            //RQ 1.3 and 2.3
+            //RunTimeAnalysis.equivDis_NCvsPTIME();
+            //RunTimeAnalysis.strongerDis_NCvsPTIME();
+            //RunTimeAnalysis.orderedTest();
+            
+            //Additional analysis
+            //IccmaAnalysis.parseDimensionsCategories();
+            //IccmaAnalysis.parseCategories();
+            IccmaAnalysis.parseGraphStructures();
             
             
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-//        List<DungTheory> inputICCMA = Util.readICCMA();
-//        for (DungTheory af : inputICCMA) {
-//            //TODO test ICCMA
-//        }
     }
 }

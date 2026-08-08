@@ -3,7 +3,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.tweetyproject.arg.dung.syntax.DungTheory;
 import org.tweetyproject.arg.dung.util.DefaultDungTheoryGenerator;
 
-import model.NC_Algorithm;
+import model.MV_Algorithm;
 
 public class testMain {
     public static void main(String[] args) {
