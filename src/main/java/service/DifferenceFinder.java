@@ -16,8 +16,8 @@ public class DifferenceFinder {
             boolean ptime;
             boolean nc;
             for (int i = 0; i < 1; i++) {
-                ptime = PTIME_Algorithm.strongerDis_Sequential(matrix, inst.a(), inst.b());
-                nc = NC_Algorithm.strongerDis_Sequential(matrix, inst.a(), inst.b());
+                ptime = MM_Algorithm.strongerDis_Sequential(matrix, inst.a(), inst.b());
+                nc = MV_Algorithm.strongerDis_Sequential(matrix, inst.a(), inst.b());
                 if (ptime != nc) {
                     counter++;
                 }
