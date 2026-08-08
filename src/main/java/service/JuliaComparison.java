@@ -36,14 +36,14 @@ public class JuliaComparison {
 
                     // Warm-up
                     for (int i = 0; i < 10; i++) {
-                        //PTIME_Algorithm.strongDis_Sequential(matrix, inst.a(), inst.b());
-                        NC_Algorithm.strongerDis_Sequential(matrix, inst.a(), inst.b());
+                        MM_Algorithm.strongerDis_Sequential(matrix, inst.a(), inst.b());
+                        //NC_Algorithm.strongerDis_Sequential(matrix, inst.a(), inst.b());
                     }
 
                     // Actual test
                     long start = System.nanoTime();
-                    //boolean r = PTIME_Algorithm.strongDis_Sequential(matrix, inst.a(), inst.b());
-                    boolean r = NC_Algorithm.strongerDis_Sequential(matrix, inst.a(), inst.b());
+                    boolean r = MM_Algorithm.strongerDis_Sequential(matrix, inst.a(), inst.b());
+                    //boolean r = NC_Algorithm.strongerDis_Sequential(matrix, inst.a(), inst.b());
                     long end = System.nanoTime();
 
                     double time = end - start;
@@ -65,7 +65,7 @@ public class JuliaComparison {
         }
         try (BufferedWriter w = new BufferedWriter(
                 
-                new FileWriter("results/java_results_ejml_nc.csv"))) {
+                new FileWriter("results/java_results_ejml_ptime.csv"))) {
 
             for (String line : results) {
                 w.write(line);

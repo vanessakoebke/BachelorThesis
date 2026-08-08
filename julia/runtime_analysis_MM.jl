@@ -33,7 +33,7 @@ end
 # =========================
 base = @__DIR__
 
-java_path  = joinpath(base, "..", "results", "java_results_ejml.csv")
+java_path  = joinpath(base, "..", "results", "java_results_ejml_ptime.csv")
 julia_path = joinpath(base, "..", "results", "julia_results_MM_withoutTypeAnnotation.csv")
 julia_ann_path = joinpath(base, "..", "results", "julia_results_MM_withTypeAnnotation.csv")
 rust_path = joinpath(base, "..", "results", "rust_results_MM.csv")

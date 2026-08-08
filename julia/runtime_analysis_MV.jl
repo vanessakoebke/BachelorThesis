@@ -34,8 +34,8 @@ end
 base = @__DIR__
 
 java_path  = joinpath(base, "..", "results", "java_results_ejml_nc.csv")
-julia_path = joinpath(base, "..", "results", "julia_results_MV_withoutTypAnnotation.csv")
-julia_ann_path = joinpath(base, "..", "results", "julia_results_MV_withTypAnnotation.csv")
+julia_path = joinpath(base, "..", "results", "julia_results_MV_withoutTypeAnnotation.csv")
+julia_ann_path = joinpath(base, "..", "results", "julia_results_MV_withTypeAnnotation.csv")
 rust_path = joinpath(base, "..", "results", "rust_results_MV.csv")
 rust_opt_path = joinpath(base, "..", "results", "rust_results_MV_opt.csv")
 cpp_path = joinpath(base, "..", "results", "cpp_results_MV.csv")

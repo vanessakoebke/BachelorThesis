@@ -1,5 +1,3 @@
-use std::time::{SystemTime, UNIX_EPOCH};
-
 pub fn strong_dis_mm(f: &[f64], n: usize, a: usize, b: usize) -> bool {
     let mut m = f.to_vec();
 
@@ -21,16 +19,14 @@ pub fn strong_dis_mm(f: &[f64], n: usize, a: usize, b: usize) -> bool {
 }
 
 pub fn strong_dis_mv(f: &[f64], n: usize, a: usize, b: usize) -> bool {
-    let mut rng = SimpleRng::from_time();
     let mut v1 = vec![0.0; n];
     let mut v2 = vec![0.0; n];
     v1[a] = 1.0;
     v2[b] = 1.0;
 
     for iter in 1..=(2 * n) {
-        let r = rng.next_inclusive(1, 2 * n * 1000) as f64;
-        v1 = multiply_matrix_vector_scaled(f, &v1, n, r);
-        v2 = multiply_matrix_vector_scaled(f, &v2, n, r);
+        v1 = multiply_matrix_vector(f, &v1, n);
+        v2 = multiply_matrix_vector(f, &v2, n);
 
         let sum_v1: f64 = v1.iter().sum();
         let sum_v2: f64 = v2.iter().sum();
@@ -68,7 +64,7 @@ fn multiply_square(left: &[f64], right: &[f64], n: usize) -> Vec<f64> {
     product
 }
 
-fn multiply_matrix_vector_scaled(matrix: &[f64], vector: &[f64], n: usize, scale: f64) -> Vec<f64> {
+fn multiply_matrix_vector(matrix: &[f64], vector: &[f64], n: usize) -> Vec<f64> {
     let mut result = vec![0.0; n];
 
     for i in 0..n {
@@ -76,39 +72,10 @@ fn multiply_matrix_vector_scaled(matrix: &[f64], vector: &[f64], n: usize, scale
         for j in 0..n {
             sum += matrix[i * n + j] * vector[j];
         }
-        result[i] = sum * scale;
+        result[i] = sum;
     }
 
     result
-}
-
-struct SimpleRng {
-    state: u64,
-}
-
-impl SimpleRng {
-    fn from_time() -> Self {
-        let nanos = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .map(|duration| duration.as_nanos() as u64)
-            .unwrap_or(0x9e37_79b9_7f4a_7c15);
-        Self {
-            state: nanos ^ 0x9e37_79b9_7f4a_7c15,
-        }
-    }
-
-    fn next_u64(&mut self) -> u64 {
-        let mut x = self.state;
-        x ^= x << 13;
-        x ^= x >> 7;
-        x ^= x << 17;
-        self.state = x;
-        x
-    }
-
-    fn next_inclusive(&mut self, min: usize, max: usize) -> usize {
-        min + (self.next_u64() as usize % (max - min + 1))
-    }
 }
 
 #[cfg(test)]

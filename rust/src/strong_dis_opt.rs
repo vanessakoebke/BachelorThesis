@@ -1,5 +1,4 @@
 use std::os::raw::{c_double, c_int};
-use std::time::{SystemTime, UNIX_EPOCH};
 
 const CBLAS_ROW_MAJOR: c_int = 101;
 const CBLAS_NO_TRANS: c_int = 111;
@@ -68,8 +67,6 @@ pub fn strong_dis_mm_opt(f: &[f64], n: usize, a: usize, b: usize) -> bool {
 /// strong_dis_mv (BLAS GEMV)
 /// =========================
 pub fn strong_dis_mv_opt(f: &[f64], n: usize, a: usize, b: usize) -> bool {
-    let mut rng = SimpleRng::from_time();
-
     let mut v1 = vec![0.0; n];
     let mut v2 = vec![0.0; n];
 
@@ -80,10 +77,8 @@ pub fn strong_dis_mv_opt(f: &[f64], n: usize, a: usize, b: usize) -> bool {
     v2[b] = 1.0;
 
     for iter in 1..=(2 * n) {
-        let r = rng.next_inclusive(1, 2 * n * 1000) as f64;
-
-        matvec_blas(f, &v1, &mut tmp1, n, r);
-        matvec_blas(f, &v2, &mut tmp2, n, r);
+        matvec_blas(f, &v1, &mut tmp1, n);
+        matvec_blas(f, &v2, &mut tmp2, n);
 
         std::mem::swap(&mut v1, &mut tmp1);
         std::mem::swap(&mut v2, &mut tmp2);
@@ -130,14 +125,14 @@ fn matmul_blas(a: &[f64], b: &[f64], c: &mut [f64], n: usize) {
 /// =========================
 /// BLAS: Matrix × Vector
 /// =========================
-fn matvec_blas(matrix: &[f64], x: &[f64], y: &mut [f64], n: usize, scale: f64) {
+fn matvec_blas(matrix: &[f64], x: &[f64], y: &mut [f64], n: usize) {
     unsafe {
         cblas_dgemv(
             CBLAS_ROW_MAJOR,
             CBLAS_NO_TRANS,
             n as i32,
             n as i32,
-            scale,
+            1.0,
             matrix.as_ptr(),
             n as i32,
             x.as_ptr(),
@@ -162,39 +157,6 @@ fn column_sums(matrix: &[f64], n: usize, a: usize, b: usize) -> (f64, f64) {
     }
 
     (sa, sb)
-}
-
-/// =========================
-/// RNG (unchanged)
-/// =========================
-struct SimpleRng {
-    state: u64,
-}
-
-impl SimpleRng {
-    fn from_time() -> Self {
-        let nanos = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .map(|d| d.as_nanos() as u64)
-            .unwrap_or(0x9e37_79b9_7f4a_7c15);
-
-        Self {
-            state: nanos ^ 0x9e37_79b9_7f4a_7c15,
-        }
-    }
-
-    fn next_u64(&mut self) -> u64 {
-        let mut x = self.state;
-        x ^= x << 13;
-        x ^= x >> 7;
-        x ^= x << 17;
-        self.state = x;
-        x
-    }
-
-    fn next_inclusive(&mut self, min: usize, max: usize) -> usize {
-        min + (self.next_u64() as usize % (max - min + 1))
-    }
 }
 
 /// =========================

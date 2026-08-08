@@ -1,9 +1,7 @@
 #include "strong_dis.hpp"
 
-#include <chrono>
 #include <cmath>
 #include <numeric>
-#include <random>
 
 namespace {
 
@@ -37,11 +35,10 @@ std::vector<double> multiply_square(
     return product;
 }
 
-std::vector<double> multiply_matrix_vector_scaled(
+std::vector<double> multiply_matrix_vector(
     const std::vector<double>& matrix,
     const std::vector<double>& vector,
-    std::size_t n,
-    double scale
+    std::size_t n
 ) {
     std::vector<double> result(n, 0.0);
 
@@ -50,17 +47,10 @@ std::vector<double> multiply_matrix_vector_scaled(
         for (std::size_t j = 0; j < n; ++j) {
             sum += matrix[i * n + j] * vector[j];
         }
-        result[i] = sum * scale;
+        result[i] = sum;
     }
 
     return result;
-}
-
-std::mt19937_64 make_rng() {
-    const auto seed = static_cast<std::uint64_t>(
-        std::chrono::high_resolution_clock::now().time_since_epoch().count()
-    );
-    return std::mt19937_64(seed);
 }
 
 } // namespace
@@ -86,18 +76,14 @@ bool strong_dis_mm(const std::vector<double>& f, std::size_t n, std::size_t a, s
 }
 
 bool strong_dis_mv(const std::vector<double>& f, std::size_t n, std::size_t a, std::size_t b) {
-    auto rng = make_rng();
-    std::uniform_int_distribution<std::size_t> distribution(1, 2 * n * 1000);
-
     std::vector<double> v1(n, 0.0);
     std::vector<double> v2(n, 0.0);
     v1[a] = 1.0;
     v2[b] = 1.0;
 
     for (std::size_t iter = 1; iter <= 2 * n; ++iter) {
-        const double r = static_cast<double>(distribution(rng));
-        v1 = multiply_matrix_vector_scaled(f, v1, n, r);
-        v2 = multiply_matrix_vector_scaled(f, v2, n, r);
+        v1 = multiply_matrix_vector(f, v1, n);
+        v2 = multiply_matrix_vector(f, v2, n);
 
         const double sum_v1 = std::accumulate(v1.begin(), v1.end(), 0.0);
         const double sum_v2 = std::accumulate(v2.begin(), v2.end(), 0.0);
@@ -112,4 +98,3 @@ bool strong_dis_mv(const std::vector<double>& f, std::size_t n, std::size_t a, s
 
     return false;
 }
-

@@ -39,9 +39,8 @@ function StrongDis_MV_ann(F::Matrix{Int}, a::Int, b::Int)
     v1[a] = 1.0
     v2[b] = 1.0
     for iter in 1:(2n)
-        r = rand(1:(2n*1000))   # Julia-Äquivalent zu ThreadLocalRandom
-        v1 = F * v1 * r
-        v2 = F * v2 * r
+        v1 = F * v1 
+        v2 = F * v2 
         sumV1 = sum(v1)
         sumV2 = sum(v2)
         if abs(sumV1 - sumV2) > 1e-9
@@ -61,10 +60,9 @@ function StrongDis_MV(F, a, b)
     v2 = zeros(Float64, n)
     v1[a] = 1.0
     v2[b] = 1.0
-    for iter in 1:(2n)
-        r = rand(1:(2n*1000))   
-        v1 = F * v1 * r
-        v2 = F * v2 * r
+    for iter in 1:(2n)  
+        v1 = F * v1 
+        v2 = F * v2 
         sumV1 = sum(v1)
         sumV2 = sum(v2)
         if abs(sumV1 - sumV2) > 1e-9

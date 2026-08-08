@@ -2,10 +2,8 @@
 
 #include <Accelerate/Accelerate.h>
 
-#include <chrono>
 #include <cmath>
 #include <numeric>
-#include <random>
 
 namespace {
 
@@ -54,15 +52,14 @@ void matvec_blas(
     const std::vector<double>& matrix,
     const std::vector<double>& vector,
     std::vector<double>& result,
-    std::size_t n,
-    double scale
+    std::size_t n
 ) {
     cblas_dgemv(
         CblasRowMajor,
         CblasNoTrans,
         static_cast<int>(n),
         static_cast<int>(n),
-        scale,
+        1.0,
         matrix.data(),
         static_cast<int>(n),
         vector.data(),
@@ -71,13 +68,6 @@ void matvec_blas(
         result.data(),
         1
     );
-}
-
-std::mt19937_64 make_rng() {
-    const auto seed = static_cast<std::uint64_t>(
-        std::chrono::high_resolution_clock::now().time_since_epoch().count()
-    );
-    return std::mt19937_64(seed);
 }
 
 } // namespace
@@ -104,9 +94,6 @@ bool strong_dis_mm_opt(const std::vector<double>& f, std::size_t n, std::size_t 
 }
 
 bool strong_dis_mv_opt(const std::vector<double>& f, std::size_t n, std::size_t a, std::size_t b) {
-    auto rng = make_rng();
-    std::uniform_int_distribution<std::size_t> distribution(1, 2 * n * 1000);
-
     std::vector<double> v1(n, 0.0);
     std::vector<double> v2(n, 0.0);
     std::vector<double> tmp1(n, 0.0);
@@ -115,9 +102,8 @@ bool strong_dis_mv_opt(const std::vector<double>& f, std::size_t n, std::size_t 
     v2[b] = 1.0;
 
     for (std::size_t iter = 1; iter <= 2 * n; ++iter) {
-        const double r = static_cast<double>(distribution(rng));
-        matvec_blas(f, v1, tmp1, n, r);
-        matvec_blas(f, v2, tmp2, n, r);
+        matvec_blas(f, v1, tmp1, n);
+        matvec_blas(f, v2, tmp2, n);
 
         v1.swap(tmp1);
         v2.swap(tmp2);
@@ -135,4 +121,3 @@ bool strong_dis_mv_opt(const std::vector<double>& f, std::size_t n, std::size_t 
 
     return false;
 }
-
