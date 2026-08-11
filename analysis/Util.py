@@ -5,8 +5,8 @@ import os
 import matplotlib.ticker as ticker
 from matplotlib.ticker import FuncFormatter
 
-blue ="#2638aa"
-purple = "#d183dd"
+blue ="#1f77b4" 
+purple = "#c5b0d5"
 
 #Preparing data
 def format_time(x, pos):
@@ -29,11 +29,6 @@ def remove_outliers(group):
     IQR = Q3 - Q1
     return group[(group >= Q1 - 1.5 * IQR) & (group <= Q3 + 1.5 * IQR)]
 
-def clean_dataframe(df, col1, col2):
-    df_clean = df.copy()
-    df_clean[col1] = df.groupby("n")[col1].transform(remove_outliers)
-    df_clean[col2] = df.groupby("n")[col2].transform(remove_outliers)
-    return df_clean.dropna()
 
 #Plots
 def plot_combined_boxplot(df, col1, col2, label1, label2, output_path, title):
@@ -144,3 +139,4 @@ def plot_median(df, col1, col2, label1, label2, output_path, title):
 
     plt.savefig(f"{output_path}/{title}_median.png")
     plt.close()
+
