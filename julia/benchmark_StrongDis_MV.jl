@@ -20,12 +20,16 @@ for file in files
     A, a, b = load_instance(file)
 
     # Warmup (JIT compilation)
-    StrongDis_MV_ann(A, a, b)
+    #StrongDis_MV_ann(A, a, b)
+    StrongDis_MV(A, a, b)
+
 
     # Eigentliche Messung
     start = time_ns()
 
-    r = StrongDis_MV_ann(A, a, b)
+    #r = StrongDis_MV_ann(A, a, b)
+    r = StrongDis_MV(A, a, b)
+
 
     elapsed = time_ns() - start
 
@@ -36,7 +40,8 @@ for file in files
     ))
 end
 
-open("results/julia_results_MV_withTypAnnotation.csv", "w") do io
+#open("results/julia_results_MV_withTypeAnnotation.csv", "w") do io
+open("results/julia_results_MV_withoutTypeAnnotation.csv", "w") do io
 
     println(io, "file,time,result")
 

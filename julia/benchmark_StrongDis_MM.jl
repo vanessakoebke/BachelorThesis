@@ -17,15 +17,21 @@ for file in files
 
     println("Benchmarking $file")
 
-    A, a, b = load_instance(file)
+    A::Matrix{Float64}, a::Int64, b::Int64 = load_instance(file)
+    #A, a, b = load_instance(file)
+
 
     # Warmup (JIT compilation)
-    StrongDis_MM(A, a, b)
+    StrongDis_MM_ann(A, a, b)
+    #StrongDis_MM(A, a, b)
+
 
     # Eigentliche Messung
     start = time_ns()
 
-    r = StrongDis_MM(A, a, b)
+    r = StrongDis_MM_ann(A, a, b)
+    #r = StrongDis_MM(A, a, b)
+
 
     elapsed = time_ns() - start
 
@@ -36,7 +42,8 @@ for file in files
     ))
 end
 
-open("results/julia_results_MM.csv", "w") do io
+open("results/julia_results_MM_withTypeAnnotation.csv", "w") do io
+#open("results/julia_results_MM_withoutTypeAnnotation.csv", "w") do io
 
     println(io, "file,time,result")
 
